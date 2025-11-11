@@ -3,8 +3,7 @@
 using namespace std;
 
 int main(){
-    cout << "JOE METRI DESH
-"
+    cout << "JOE METRI DESH";
 
     return 1;
 }
