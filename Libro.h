@@ -17,6 +17,7 @@ class Libro{
     char autor[30];
     float precio;
     int EjemplaresTotales;
+    int EjemplaresDisponibles;
 
 
     public:
@@ -39,6 +40,9 @@ class Libro{
     void setEjemeplaresTotales(int e) { EjemplaresTotales = e; }
     int getEjemplaresTotales() { return EjemplaresTotales; }
 
+    void setEjemplaresDisponibles(int cant){ EjemplaresDisponibles=cant; }
+    int getEjemplaresDisponibles(){ return EjemplaresDisponibles; }
+
 
     //sobrecargas 
 
@@ -49,12 +53,13 @@ class Libro{
     //sumar existencia
         Libro& operator+=(int cant) {
         EjemplaresTotales += cant;
+        EjemplaresDisponibles += cant;
         return *this;
     }
     //restar existencia
     Libro& operator-=(int cant) {
-        EjemplaresTotales -= cant;
-        if (EjemplaresTotales < 0) EjemplaresTotales = 0;
+        EjemplaresDisponibles -= cant;
+        if (EjemplaresDisponibles< 0) EjemplaresDisponibles = 0;
         return *this;
     }
     

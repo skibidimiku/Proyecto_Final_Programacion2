@@ -50,6 +50,7 @@ int SetLibro() {
         cout << "\n\t Ingresa los EJEMPLARES TOTALES: ";
         cin >> existencia;
         registro.setEjemeplaresTotales(existencia);
+        registro.setEjemplaresDisponibles(existencia);
         
         //mueve el cursor de "POINTER" para saber en donde va a hacer cambios en el archivo 
         //esto lo hace usando le posicion de nuestra "ID"

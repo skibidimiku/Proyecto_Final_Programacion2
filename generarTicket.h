@@ -51,7 +51,7 @@ int GenerarTicketVenta(Libro& registro, int cantidad) {
     }
 
     // Verificar si hay suficiente existencia
-    if (registro.getEjemplaresTotales() < cantidad) {
+    if (registro.getEjemplaresDisponibles() < cantidad) {
         cout << "\n\t No hay suficiente existencia. Disponible: " << registro.getEjemplaresTotales();
         archivo.close();
         return 1;
@@ -65,7 +65,7 @@ int GenerarTicketVenta(Libro& registro, int cantidad) {
     ticket.setTotal(registro.getPrecio() * cantidad);
 
     // Restar la cantidad vendida de la existencia
-    registro.setEjemeplaresTotales(registro.getEjemplaresTotales() - cantidad);
+    registro.setEjemplaresDisponibles(registro.getEjemplaresDisponibles() - cantidad);
     
     // Guardar el producto actualizado
     archivo.seekp((id - 1) * sizeof(Libro), ios::beg);

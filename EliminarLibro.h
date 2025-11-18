@@ -50,13 +50,14 @@ int EliminarLibro(){
         }
         if(registro.getID()!= 0){
             cout << "\n-----------------------------------------------------";
-        cout << "\n\t -> Datos del producto <-";
-        cout << "\n\t ID: " << registro.getID();
-        cout << "\n\t Titulo: " << registro.getTitulo();
-        cout << "\n\t Precio: " << registro.getPrecio(); 
-        cout << "\n\t Categoria: " << registro.getCategoria();  
-        cout << "\n\t Autor: " << registro.getAutor();
-        cout << "\n\t Ejmp totales: " << registro.getEjemplaresTotales() << endl;
+            cout << "\n\t -> Datos del producto <-";
+            cout << "\n\t ID: " << registro.getID();
+            cout << "\n\t Titulo: " << registro.getTitulo();
+            cout << "\n\t Precio: " << registro.getPrecio(); 
+            cout << "\n\t Categoria: " << registro.getCategoria();  
+            cout << "\n\t Autor: " << registro.getAutor();
+            cout << "\n\t Ejmp totales: " << registro.getEjemplaresTotales() << endl;
+            cout << "\n\t Ejemplares disponibles: " << registro.getEjemplaresDisponibles() << endl;
         }
         cout << "\n\n\t Quieres borrar este producto? s/n: ";
         cin.ignore();
