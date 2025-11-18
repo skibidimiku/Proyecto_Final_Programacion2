@@ -16,7 +16,7 @@ int SetUsuario(){
 
     do{
         int id;
-        cout << "\n\n\t Ingresa el ID del libro [1-10]: ";
+        cout << "\n\n\t Ingresa el ID del usuario [1-10]: ";
         cin >> id;
         usuar.setMatricula(id);
 
@@ -30,10 +30,10 @@ int SetUsuario(){
         char contrasena[30];
         cout << "\n\t Ingresa el nivel de usuario (1=administrador 0=Usuario): ";
         cin >> permisos;
+        newpermisos=permisos;
         do{
-            newpermisos=permisos;
             if (newpermisos ==1){
-                cout << "\n\t Dame la contraseña: ";
+                cout << "\n\t Dame la contrasena: ";
                 cin.ignore();
                 cin.getline(contrasena, 30);
                 usuar.setContrasena(contrasena);
@@ -62,14 +62,8 @@ int SetUsuario(){
         cin.getline(correo, 30);
         usuar.setCorreo(correo);
 
-        char correo[30];
-        cout << "\n\t Ingresa el correo: ";
-        cin.ignore();
-        cin.getline(correo, 30);
-        usuar.setCorreo(correo);
-
         char tel[30];
-        cout << "\n\t Ingresa el AUTOR del LIBRO: ";
+        cout << "\n\t Ingresa el telefono: ";
         cin.ignore();
         cin.getline(tel, 30);
         usuar.setTelefono(tel);
@@ -78,6 +72,18 @@ int SetUsuario(){
         int estatus=1; 
         usuar.setEstatus(estatus);
 
+        do {
+            cout << "\n--------------------------------------";
+            cout << "\n\t [1] ingresar otro usuario";
+            cout << "\n\t [2] volver al menu principal";
+            cout << "\n\t opcion: ";
+            cin >> op;
+        } while (op != 1 && op != 2);
+
+        if (op == 2) break;
+
 
     }while(true);
+
+    return -1;
 }

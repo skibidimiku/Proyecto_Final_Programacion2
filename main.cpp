@@ -4,6 +4,7 @@
 #include "Usuario.h"
 #include "CrearCascaron.h"
 #include "SetLibro.h"
+#include "SetUsuario.h"
 #include "DemostrarLibro.h"
 #include "Libro.h"
 #include "ModificarLibro.h"
@@ -42,13 +43,16 @@ int main(){
             cout << "\n\t Dame la matricula del usuario: ";
             cin >> id;
             tipo_menu=usuario.iniciarSecion(id);
-            if (tipo_menu == 1){
+            if (tipo_menu == 1 || op == 2){
                 menu_Administrador();
             }else if(tipo_menu == 0){
                 menu_Usuario();
             }
             
             break;
+        
+        case 3:
+            SetUsuario();
         
         default:
             cout << "\n\n\t La opcion no existe.";
