@@ -15,7 +15,7 @@ void menu_Administrador();
 void menu_Usuario();
 
 int main(){
-    int op, id, tipo_menu;
+    int op, id, tipo_menu=0;
     time_t tiempodeinicio;
     time(&tiempodeinicio);
     char* fecha=ctime(&tiempodeinicio);
@@ -51,7 +51,7 @@ int main(){
             break;
         
         default:
-            cout << "\n\n\t La opcion no existe."
+            cout << "\n\n\t La opcion no existe.";
             break;
         }
 
