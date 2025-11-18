@@ -116,3 +116,7 @@ void menu_Administrador(){
         }
     }while(selec != 0);
 }
+
+void menu_Usuario(){
+    
+}
