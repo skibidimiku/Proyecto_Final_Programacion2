@@ -77,7 +77,7 @@ int SetUsuario(){
 
         do {
             cout << "\n--------------------------------------";
-            cout << "\n\t [1] ingresar otro libro";
+            cout << "\n\t [1] ingresar otro usuario";
             cout << "\n\t [2] volver al menu principal";
             cout << "\n\t opcion: ";
             cin >> op;

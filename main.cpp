@@ -40,6 +40,7 @@ int main(){
         case 1:
             creaCascaron();
             break;
+            
         case 2:
             cout << "\n\t Dame la matricula del usuario: ";
             cin >> id;
@@ -54,6 +55,7 @@ int main(){
 
         case 3:
             SetUsuario();
+            break;
         
         case 4:
             mostrar_Ayuda_Inicio();
