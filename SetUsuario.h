@@ -16,7 +16,7 @@ int SetUsuario(){
 
     do{
         int id;
-        cout << "\n\n\t Ingresa el ID del libro [1-10]: ";
+        cout << "\n\n\t Ingresa la matricula del usuario [1-10]: ";
         cin >> id;
         usuar.setMatricula(id);
 
@@ -62,14 +62,8 @@ int SetUsuario(){
         cin.getline(correo, 30);
         usuar.setCorreo(correo);
 
-        char correo[30];
-        cout << "\n\t Ingresa el correo: ";
-        cin.ignore();
-        cin.getline(correo, 30);
-        usuar.setCorreo(correo);
-
         char tel[30];
-        cout << "\n\t Ingresa el AUTOR del LIBRO: ";
+        cout << "\n\t Ingresa tu telefono: ";
         cin.ignore();
         cin.getline(tel, 30);
         usuar.setTelefono(tel);
@@ -78,6 +72,22 @@ int SetUsuario(){
         int estatus=1; 
         usuar.setEstatus(estatus);
 
+        UsuArchivo.seekp((usuar.getMatricula() - 1) * sizeof(Usuario), ios::beg);
+        UsuArchivo.write(reinterpret_cast<char*>(&usuar), sizeof(Usuario));
+
+        do {
+            cout << "\n--------------------------------------";
+            cout << "\n\t [1] ingresar otro libro";
+            cout << "\n\t [2] volver al menu principal";
+            cout << "\n\t opcion: ";
+            cin >> op;
+        } while (op != 1 && op != 2);
+
+        if (op == 2) break;
+
 
     }while(true);
+    UsuArchivo.close();
+
+    return 1;
 }

@@ -3,6 +3,7 @@
 #include <ctime>
 #include "Usuario.h"
 #include "CrearCascaron.h"
+#include "SetUsuario.h"
 #include "SetLibro.h"
 #include "DemostrarLibro.h"
 #include "Libro.h"
@@ -49,6 +50,9 @@ int main(){
             }
             
             break;
+
+        case 3:
+            SetUsuario();
         
         default:
             cout << "\n\n\t La opcion no existe.";

@@ -59,14 +59,15 @@ public:
         while(Archivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario))){
             if (usu.matricula == id){
                 if (usu.permisos == 1){
-                    cout << "\n\tDame la contraseña: ";
+                    cout << "\n\tDame la contrasena: ";
                     cin.ignore();
                     cin.getline(contra, 30);
-                    while ((usu==contra) == 0 && intentos < 3){
+                    while (!(usu==contra) && intentos < 3){
                         cout << "\n\tLa contraseña es in correcta te quedan [" << 3 - intentos << "] intentos.";
-                        cout << "\n\tDame la contraseña: ";
+                        cout << "\n\tDame la contrasena: ";
                         cin.ignore();
                         cin.getline(contra, 30);
+                        intentos++;
                     }
 
                     if (usu==contra){
