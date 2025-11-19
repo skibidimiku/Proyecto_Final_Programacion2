@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <cstring>
 using namespace std;
 
 #ifndef USUARIO_DEFINED
@@ -10,32 +10,32 @@ class Usuario {
 private:
 
 
-string nombre;
+char nombre[30];
 int matricula;
-string carrera;
-string correo;
-string contrasena; // solo aplica a administradores
-string telefono;
+char carrera[30];
+char correo[50];
+char contrasena[30]; // solo aplica a administradores
+char telefono[30];
 int Estatus; // 1=Activo  0=Bloqueado 
 int permisos; // 1=Administrador  0=Usuario
 
 public:
 
     //setters y getters
-    void setNombre(const string& nom) { nombre = nom; }
-    string getNombre() const { return nombre; }
+    void setNombre(const char* nom) { strncpy(nombre, nom, 30); nombre[29] = '\0'; }
+    const char* getNombre() const { return nombre; }
 
     void setMatricula(int c) { matricula = c; }
     int getMatricula() const { return matricula; }
 
-    void setCarrera(const string& car) { carrera = car; }
-    string getNCarrera() const { return carrera; }
+    void setCarrera(const char* car) { strncpy(carrera, car, 30); carrera[29] = '\0'; }
+    const char* getNCarrera() const { return carrera; }
 
-    void setCorreo(const string& corr) { correo = corr; }
-    string getCorreo() const { return correo; }
+    void setCorreo(const char* corr) { strncpy(correo, corr, 50); correo[49] = '\0'; }
+    const char* getCorreo() const { return correo; }
 
-    void setTelefono(string tel) { telefono = tel; }
-    string getTelefono() const { return telefono; }
+    void setTelefono(const char* tel) { strncpy(telefono, tel, 30); carrera[29] = '\0'; }
+    const char* getTelefono() const { return telefono; }
 
     void setEstatus(int est) { Estatus = est; }
     int getEstatus() const { return Estatus; }
@@ -43,8 +43,8 @@ public:
     void setPermisos(int per){ permisos=per; }
     int getPermisos() const{ return permisos; }
 
-    void setContrasena(string con){ contrasena=con; }
-    string getContrasena() const{ return contrasena; }
+    void setContrasena(const char* con){ strncpy(contrasena, con, 30); contrasena[29] = '\0'; }
+    const char* getContrasena() const{ return contrasena; }
 
     int iniciarSecion(int id){
         fstream Archivo("Usuarios.dat", ios::binary | ios::in | ios::out);

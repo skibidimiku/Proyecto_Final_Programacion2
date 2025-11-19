@@ -31,7 +31,7 @@ int creaCascaron(){
     Blancousu.setMatricula(0);
     Blancousu.setNombre("");
     Blancousu.setPermisos(0);
-    Blancousu.setTelefono(0);
+    Blancousu.setTelefono("");
     for(int i=0; i<10; i++){
         //ahora le estoy diciendo: "Del documento, pon 10 ESPACIOS en blanco (usando la variable)"
         //esto deja la hoja en 0´s total para luego ser modificados
