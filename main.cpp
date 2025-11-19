@@ -9,6 +9,7 @@
 #include "ModificarLibro.h"
 #include "EliminarLibro.h"
 #include "generarTicket.h"
+#include "Menus_Ayuda.h"
 
 using namespace std;
 void menu_Administrador();
@@ -50,6 +51,10 @@ int main(){
             
             break;
         
+        case 4:
+            mostrar_Ayuda_Inicio();
+            break;
+
         default:
             cout << "\n\n\t La opcion no existe.";
             break;
@@ -77,6 +82,7 @@ void menu_Administrador(){
         cout << "\n\t [5] Eliminar algun producto";
         cout << "\n\t [6] Registrar venta (Generar ticket)";
         cout << "\n\t [7] Mostrar Total Ventas (Tickets)";
+        cout << "\n\t [8] Mostrar menu de ayuda.";
         cout << "\n\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
         cin >> selec;
@@ -108,6 +114,10 @@ void menu_Administrador(){
             case 7: 
                 //MostrarTotalVentas();
             break;
+
+            case 8:
+                mostrar_Ayuda_Administrador();
+                break;
 
             case 0: cout << "\n\t Saliendo del programa...\n";
                 break;
