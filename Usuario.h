@@ -1,5 +1,7 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
+#include <ctime>
 #include <cstring>
 using namespace std;
 
@@ -9,13 +11,14 @@ using namespace std;
 class Usuario {
 private:
 
-
 char nombre[30];
 int matricula;
 char carrera[30];
 char correo[50];
 char contrasena[30]; // solo aplica a administradores
 char telefono[30];
+int cantPres=0;
+bool multa;
 int Estatus; // 1=Activo  0=Bloqueado 
 int permisos; // 1=Administrador  0=Usuario
 
@@ -43,8 +46,14 @@ public:
     void setPermisos(int per){ permisos=per; }
     int getPermisos() const{ return permisos; }
 
+    void setcantPrestamos(int can){ cantPres=can; }
+    int getcantPrestamos() const{ return cantPres; }
+
     void setContrasena(const char* con){ strncpy(contrasena, con, 30); contrasena[29] = '\0'; }
     const char* getContrasena() const{ return contrasena; }
+
+    void setMulta(bool mul){ multa=mul; }
+    bool getMulta(){ return multa; }
 
     int iniciarSecion(int id){
         fstream Archivo("Usuarios.dat", ios::binary | ios::in | ios::out);
@@ -63,9 +72,8 @@ public:
                     cin.ignore();
                     cin.getline(contra, 30);
                     while (!(usu==contra) && intentos < 3){
-                        cout << "\n\tLa contraseña es in correcta te quedan [" << 3 - intentos << "] intentos.";
+                        cout << "\n\tLa contrasena es in correcta te quedan [" << 3 - intentos << "] intentos.";
                         cout << "\n\tDame la contrasena: ";
-                        cin.ignore();
                         cin.getline(contra, 30);
                         intentos++;
                     }
@@ -79,14 +87,31 @@ public:
             }
         }
 
-        cout << "\n\t El usuario no existe." << endl;
+        if (intentos==3){
+            cout<<"\n\t Muchos intentos fallidos." << endl;
+        }else{
+            cout << "\n\t El usuario no existe." << endl;
+        }
+
         return -1;
     }
 
-    
+    void printUsuario(int id){
+        fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
+        UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
+        Usuario usu;
+        UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+        cout << "\n\t El Nombre es: " << nombre;
+        cout << "\n\t Su carrera es es: " << nombre;
+
+    }
 
     bool operator==(const string cont) const {
         return this->contrasena == cont;
+    }
+
+    void operator +=(int cant){
+        cantPres=cantPres+cant;
     }
 };
 

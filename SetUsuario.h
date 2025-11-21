@@ -33,7 +33,7 @@ int SetUsuario(){
         do{
             newpermisos=permisos;
             if (newpermisos ==1){
-                cout << "\n\t Dame la contraseña: ";
+                cout << "\n\t Dame la contrasena: ";
                 cin.ignore();
                 cin.getline(contrasena, 30);
                 usuar.setContrasena(contrasena);

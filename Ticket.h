@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <ctime>
 #include <fstream>
 
 using namespace std;
@@ -10,30 +11,36 @@ using namespace std;
 class Ticket {
 private:
 
-int codigo; 
-int cantidad; 
-string nombre;
+time_t tiempodeprestamo;
+time_t tiempodeDevolucion;
+int codigo;  
+int id;
+char nombre[30];
 float subtotal;
 float total;
 
 public:
-    Ticket() : codigo(0), cantidad(0), subtotal(0.0), total(0.0) {}
-    Ticket(int c, int cant, float sub, float tot) : codigo(c), cantidad(cant), subtotal(sub), total(tot) {}
-    Ticket(const Ticket& otro) : codigo(otro.codigo), cantidad(otro.cantidad), subtotal(otro.subtotal), total(otro.total) {}
+    Ticket() : codigo(0), subtotal(0.0), total(0.0) {}
+    Ticket(int c, float sub, float tot) : codigo(c), subtotal(sub), total(tot) {}
+    Ticket(const Ticket& otro) : codigo(otro.codigo), subtotal(otro.subtotal), total(otro.total) {}
 
     //setters y getters
     void setCodigo(int c) { codigo = c; }
     int getCodigo() const { return codigo; }
-    void setCantidad(int cant) { cantidad = cant; }
-    int getCantidad() const { return cantidad; }
-    void setNombre(const string& nom) { nombre = nom; }
-    string getNombre() const { return nombre; }
+    void setId(int i) { id=i; }
+    int getId(){ return id; }
+    void setNombre(const char* nom) { strncpy(nombre, nom, 30); nombre[29] = '\0'; }
+    const char* getNombre() const { return nombre; }
     void setSubtotal(float sub) { subtotal = sub; }
     float getSubtotal() const { return subtotal; }
     void setTotal(float total) { this->total = total; }
     float getTotal() const { return total; }
+    void setfechaPrestamo(time_t fechaAct){ tiempodeprestamo=fechaAct; }
+    time_t getfechaPrestamo(){ return tiempodeprestamo; }
+    void setfechaDevolucion(time_t fechaAct){ tiempodeDevolucion=fechaAct; }
+    time_t getfechaDevolucion(){ return tiempodeDevolucion; }
 
-    void mostrarTicket() {
+ /*   void mostrarTicket() {
         cout << "Codigo de producto: " << codigo << endl;
         cout << "Cantidad: " << cantidad << endl;
         cout << "Subtotal: " << subtotal << endl;
@@ -48,7 +55,7 @@ public:
         os << "Cantidad total: " << t.cantidad << endl;
         os << "Total: $" << t.subtotal << endl;
         return os;
-    }
+    }*/
 };
 
 #endif   

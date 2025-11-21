@@ -13,8 +13,8 @@
 #include "Menus_Ayuda.h"
 
 using namespace std;
-void menu_Administrador();
-void menu_Usuario();
+void menu_Administrador(int id);
+void menu_Usuario(int id);
 
 int main(){
     int op, id, tipo_menu=0;
@@ -22,13 +22,14 @@ int main(){
     time(&tiempodeinicio);
     char* fecha=ctime(&tiempodeinicio);
     cout<<"La fecha es: " << fecha;
+    cout << tiempodeinicio;
     Usuario usuario;
 
     do{
         cout << "\n---------------------------------------------------------";
         cout << "\n\t\t\t ---> Menu De Inicio <---";
         cout << "\n\t [1] Crear cascaron.";
-        cout << "\n\t [2] Iniciar secion.";
+        cout << "\n\t [2] Iniciar sesion.";
         cout << "\n\t [3] Registrarse.";
         cout << "\n\t [4] Mostrar menu de ayuda.";
         cout << "\n\t [0] Salir.";
@@ -46,9 +47,9 @@ int main(){
             cin >> id;
             tipo_menu=usuario.iniciarSecion(id);
             if (tipo_menu == 1){
-                menu_Administrador();
+                menu_Administrador(id);
             }else if(tipo_menu == 0){
-                menu_Usuario();
+                menu_Usuario(id);
             }
             
             break;
@@ -76,11 +77,14 @@ int main(){
     return 1;
 }
 
-void menu_Administrador(){
+void menu_Administrador(int id){
     int selec;
+    Usuario Usua;
+    
+    
     do{
         cout << "\n---------------------------------------------------------";
-        cout << "\n\t\t\t ---> MENU <---";
+        cout << "\n\t ---> Menu De Administrador <---";
         cout << "\n\t [1] Crear cascaron.";
         cout << "\n\t [2] Ingresar nuevo producto";
         cout << "\n\t [3] Mostrar productos";
@@ -109,16 +113,13 @@ void menu_Administrador(){
             case 5: EliminarLibro();
             break;
             
-            case 6: {
-                int cantidad=0;
+            case 6: 
                 Libro libro; 
-                if(GenerarTicketVenta(libro, cantidad) == 0); 
-            }
+                GenerarTicketVenta(libro, Usua, id); 
                 break;
 
-
             case 7: 
-                //MostrarTotalVentas();
+                //MostrarTotalVentas();2
             break;
 
             case 8:
@@ -133,6 +134,6 @@ void menu_Administrador(){
     }while(selec != 0);
 }
 
-void menu_Usuario(){
+void menu_Usuario(int id){
     
 }
