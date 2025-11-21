@@ -30,6 +30,8 @@ int creaCascaron(){
     Blancousu.setCorreo("");
     Blancousu.setMatricula(0);
     Blancousu.setNombre("");
+    Blancousu.setMulta(0);
+    Blancousu.setcantPrestamos(0);
     Blancousu.setPermisos(0);
     Blancousu.setTelefono("");
     for(int i=0; i<10; i++){
@@ -38,22 +40,18 @@ int creaCascaron(){
         UsuArchivo.write(reinterpret_cast<char*>(&Blancousu), sizeof(Usuario));
         archivo.write(reinterpret_cast<char*>(&blanco), sizeof(Libro));
     }
+
+    fstream ticketFile("ticket.txt", ios::in | ios::app | ios::out);
+    if(!ticketFile){
+        cout<<"\n\t No se pudo abrir el archivo de ticket.";
+        return -1;
+    }
+    
+    ticketFile.clear();
+
+    ticketFile.close();                                          
     archivo.close();
     UsuArchivo.close();
-
-    //literalmente lo mismo 
-    fstream ticketFile;
-    ticketFile.open("ticket.dat",ios::binary|ios::out);
-    Ticket ticketBlank;
-    ticketBlank.setCodigo(0);
-    ticketBlank.setNombre("");
-    ticketBlank.setCantidad(0);
-    ticketBlank.setSubtotal(0.0);
-    ticketBlank.setTotal(0.0);
-    for(int i=0; i<10; i++){
-        ticketFile.write(reinterpret_cast<char*>(&ticketBlank), sizeof(Ticket));
-    }
-    ticketFile.close();
-
+    
     return 1;
 }
