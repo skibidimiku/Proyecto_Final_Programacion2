@@ -41,6 +41,7 @@ int main(){
         case 1:
             creaCascaron();
             break;
+            
         case 2:
             cout << "\n\t Dame la matricula del usuario: ";
             cin >> id;
