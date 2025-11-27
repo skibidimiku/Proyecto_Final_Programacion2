@@ -28,7 +28,6 @@ inline int DemonstrarLibro(){
             cout << "\n\t -> Datos del producto <-";
             cout << "\n\t ID: " << registro.getID();
             cout << "\n\t Titulo: " << registro.getTitulo();
-            cout << "\n\t Precio: " << registro.getPrecio(); 
             cout << "\n\t Categoria: " << registro.getCategoria();  
             cout << "\n\t Autor: " << registro.getAutor();
             cout << "\n\t Ejmp totales: " << registro.getEjemplaresTotales();

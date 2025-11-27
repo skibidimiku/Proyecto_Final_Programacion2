@@ -50,7 +50,6 @@ inline int ModificarLibro(){
         cout << "\n\t -> Datos del producto <-";
         cout << "\n\t ID: " << registro.getID();
         cout << "\n\t Titulo: " << registro.getTitulo();
-        cout << "\n\t Precio: " << registro.getPrecio(); 
         cout << "\n\t Categoria: " << registro.getCategoria();  
         cout << "\n\t Autor: " << registro.getAutor();
         cout << "\n\t Ejmp totales: " << registro.getEjemplaresTotales() << endl;
@@ -67,10 +66,6 @@ inline int ModificarLibro(){
         cin.ignore();
         cin >> resp;
         if(resp == 's' || resp == 'S') aut = true;
-        cout << "\n\t Quieres modificar el precio del libro? s/n: ";
-        cin.ignore();
-        cin >> resp;
-        if(resp == 's' || resp == 'S') prec = true;
         cout << "\n\n\t Quieres modificar la categoria del libro? s/n: ";
         cin.ignore();
         cin >> resp;
@@ -91,25 +86,12 @@ inline int ModificarLibro(){
             archivo.write(reinterpret_cast<char*>(&registro), sizeof(Libro));
         }
 
-        if(prec == true){
-            cout << "\n\t Dame el nuevo precio para el producto: ";
-
-            float NuevoPrecio;
-            cin >> NuevoPrecio;
-            registro.setPrecio(NuevoPrecio);
-
-            archivo.seekp((registro.getID()-1)*sizeof(Libro));
-            archivo.write(reinterpret_cast<char*>(&registro), sizeof(Libro));
-        }
-
         if(cat == true){
         cout << "\n------------------------------------------------";
         cout << "\n\t Dame la nueva categoria para el libro: ";
-        cin.ignore();
-
-        char NuevaCategoria[30];
-        cin.getline(NuevaCategoria, 30);
-        registro.setCategoria(NuevaCategoria);
+        
+        int NuevaCategoria;
+        cin >> NuevaCategoria;
 
         archivo.seekp((registro.getID()-1)*sizeof(Libro));
         archivo.write(reinterpret_cast<char*>(&registro), sizeof(Libro));

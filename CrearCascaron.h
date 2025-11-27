@@ -14,14 +14,13 @@ int creaCascaron(){
         return -1;
     }
     //blanco contiene todas las variables en blanco.
-    Libro blanco;
-    blanco.setID(0);
-    blanco.setTitulo("");
-    blanco.setPrecio(0);
-    blanco.setCategoria("");
-    blanco.setAutor("");
-    blanco.setEjemeplaresTotales(0);
-    blanco.setEjemplaresDisponibles(0);
+    contenido* blanco= new Libro();
+    blanco->setID(0);
+    blanco->setTitulo("");
+    blanco->setCategoria(0);
+    blanco->setAutor("");
+    blanco->setEjemeplaresTotales(0);
+    blanco->setEjemplaresDisponibles(0);
 
     Usuario Blancousu;
     Blancousu.setEstatus(1);

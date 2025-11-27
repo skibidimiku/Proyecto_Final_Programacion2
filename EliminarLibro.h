@@ -22,8 +22,7 @@ int EliminarLibro(){
 
     blanco.setID(0);
     blanco.setTitulo("");
-    blanco.setPrecio(0);
-    blanco.setCategoria("");
+    blanco.setCategoria(0);
     blanco.setAutor("");
     blanco.setEjemeplaresTotales(0);
     do{
@@ -52,8 +51,7 @@ int EliminarLibro(){
             cout << "\n-----------------------------------------------------";
             cout << "\n\t -> Datos del producto <-";
             cout << "\n\t ID: " << registro.getID();
-            cout << "\n\t Titulo: " << registro.getTitulo();
-            cout << "\n\t Precio: " << registro.getPrecio(); 
+            cout << "\n\t Titulo: " << registro.getTitulo(); 
             cout << "\n\t Categoria: " << registro.getCategoria();  
             cout << "\n\t Autor: " << registro.getAutor();
             cout << "\n\t Ejmp totales: " << registro.getEjemplaresTotales() << endl;

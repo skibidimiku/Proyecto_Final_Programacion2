@@ -8,8 +8,8 @@
 using namespace std;
 
 int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
-    Ticket ticket;
-    int idl;
+    Ticket ticket, ticketCont;
+    int idl, cont=0;
     char resp;
 
     fstream archivo;
@@ -103,23 +103,28 @@ int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
         time_t tiempoDev;
         time(&tiempoDev);
         ticket.setfechaPrestamo(tiempoPres);
-        ticket.setId(usu.getMatricula());
+        while(ticketFile>>ticketCont){
+            //busca el ultimo ticket para asignar el siguiente codigo
+            cont++;
+        }
+        ticket.setId(cont+1);
+        ticket.setEstado(1);
+        ticket.setIdusu(usu.getMatricula());
         ticket.setTotal(0);
         ticket.setNombre(usu.getNombre());
         ticket.setCodigo(registro.getID());
         ticket.setfechaDevolucion(tiempoDev);
 
-        ticketFile << " " << ticket.getCodigo() << " " << ticket.getNombre() << " " << ticket.getfechaPrestamo() << " " << ticket.getId() << " " << ticket.getTotal() << " " << ticket.getfechaDevolucion() << endl;
+        ticketFile << " " << ticket.getCodigo() << " " << ticket.getNombre() << " " << ticket.getfechaPrestamo() << " " << ticket.getId() << " " << ticket.getTotal() << " " << ticket.getfechaDevolucion() << ticket.getIdusu() << ticket.getEstado() <<endl;
 
         time_t fec= ticket.getfechaPrestamo();
         char* fecha= ctime(&fec);
         cout << "\t ====== Ticket De Prestamo ======\n";
+        cout << "\t Id del ticket: " << ticket.getId() << "\n";
         cout << "\t Nombre del usuario: " << ticket.getNombre() << "\n";
         cout << "\t Id del contenido: " << ticket.getCodigo() << "\n";
-        cout << "\t Id del usuario: " << ticket.getId() << "\n";
-        cout << "\t Id del contenido: " << ticket.getId() << "\n";
-        cout << "\t Total del prestamo:"<< ticket.getTotal() << "\n";
-        cout << "\t Total del prestamo:"<< fecha << "\n";
+        cout << "\t Id del usuario: " << ticket.getIdusu() << "\n";
+        cout << "\t Fecha Prestamo:"<< fecha << "\n";
         cout << "\t ==========================\n";
 
     }else{

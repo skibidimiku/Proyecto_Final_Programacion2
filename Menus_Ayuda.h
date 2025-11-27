@@ -49,4 +49,6 @@ int mostrar_Ayuda_Inicio(){
 
 int mostrar_Ayuda_Administrador(){
 
+
+    return 0;
 }

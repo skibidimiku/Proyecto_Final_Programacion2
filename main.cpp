@@ -81,7 +81,6 @@ void menu_Administrador(int id){
     int selec;
     Usuario Usua;
     
-    
     do{
         cout << "\n---------------------------------------------------------";
         cout << "\n\t ---> Menu De Administrador <---";

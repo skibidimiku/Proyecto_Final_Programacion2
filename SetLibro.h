@@ -27,15 +27,9 @@ int SetLibro() {
         cin.getline(titulo, 30);
         registro.setTitulo(titulo );
 
-        float precio;
-        cout << "\n\t Ingresa el PRECIO: ";
-        cin >> precio;
-        registro.setPrecio(precio);
-
-        char cat[30];
+        int cat;
         cout << "\n\t Ingresa la CATEGORIA del LIBRO: ";
-        cin.ignore();
-        cin.getline(cat, 30);
+        cin >> cat;
         registro.setCategoria(cat);
 
 

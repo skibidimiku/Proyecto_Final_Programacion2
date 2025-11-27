@@ -8,28 +8,17 @@ using namespace std;
 #ifndef USUARIO_DEFINED
 #define USUARIO_DEFINED
 
-class Usuario {
-private:
 
-char nombre[30];
-int matricula;
-char carrera[30];
-char correo[50];
-char contrasena[30]; // solo aplica a administradores
-char telefono[30];
-int cantPres=0;
-bool multa;
-int Estatus; // 1=Activo  0=Bloqueado 
-int permisos; // 1=Administrador  0=Usuario
-
+class Persona{
+protected:
+    char nombre[30];
+    char carrera[30];
+    char correo[50];
+    char telefono[30];
 public:
 
-    //setters y getters
     void setNombre(const char* nom) { strncpy(nombre, nom, 30); nombre[29] = '\0'; }
     const char* getNombre() const { return nombre; }
-
-    void setMatricula(int c) { matricula = c; }
-    int getMatricula() const { return matricula; }
 
     void setCarrera(const char* car) { strncpy(carrera, car, 30); carrera[29] = '\0'; }
     const char* getNCarrera() const { return carrera; }
@@ -39,6 +28,25 @@ public:
 
     void setTelefono(const char* tel) { strncpy(telefono, tel, 30); carrera[29] = '\0'; }
     const char* getTelefono() const { return telefono; }
+};
+
+
+class Usuario : public Persona {
+private:
+
+int matricula;
+char contrasena[30]; // solo aplica a administradores
+int cantPres=0;
+bool multa;
+int Estatus; // 1=Activo  0=Bloqueado 
+int permisos; // 1=Administrador  0=Usuario
+
+public:
+
+    //setters y getters
+
+    void setMatricula(int c) { matricula = c; }
+    int getMatricula() const { return matricula; }
 
     void setEstatus(int est) { Estatus = est; }
     int getEstatus() const { return Estatus; }

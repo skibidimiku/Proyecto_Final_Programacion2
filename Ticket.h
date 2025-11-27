@@ -13,26 +13,29 @@ private:
 
 time_t tiempodeprestamo;
 time_t tiempodeDevolucion;
-int codigo;  
+int codigo;
+bool estado; // 1: activo 0: devuelto
 int id;
+int idusu;
 char nombre[30];
-float subtotal;
 float total;
 
 public:
-    Ticket() : codigo(0), subtotal(0.0), total(0.0) {}
-    Ticket(int c, float sub, float tot) : codigo(c), subtotal(sub), total(tot) {}
-    Ticket(const Ticket& otro) : codigo(otro.codigo), subtotal(otro.subtotal), total(otro.total) {}
+    Ticket() : codigo(0), total(0.0) {}
+    Ticket(int c, float tot) : codigo(c), total(tot) {}
+    Ticket(const Ticket& otro) : codigo(otro.codigo), total(otro.total) {}
 
     //setters y getters
     void setCodigo(int c) { codigo = c; }
     int getCodigo() const { return codigo; }
+    void setEstado(bool est) { estado = est; }
+    bool getEstado() const { return estado; }
     void setId(int i) { id=i; }
     int getId(){ return id; }
+    void setIdusu(int i) { idusu=i; }
+    int getIdusu(){ return idusu; }
     void setNombre(const char* nom) { strncpy(nombre, nom, 30); nombre[29] = '\0'; }
     const char* getNombre() const { return nombre; }
-    void setSubtotal(float sub) { subtotal = sub; }
-    float getSubtotal() const { return subtotal; }
     void setTotal(float total) { this->total = total; }
     float getTotal() const { return total; }
     void setfechaPrestamo(time_t fechaAct){ tiempodeprestamo=fechaAct; }
@@ -40,6 +43,19 @@ public:
     void setfechaDevolucion(time_t fechaAct){ tiempodeDevolucion=fechaAct; }
     time_t getfechaDevolucion(){ return tiempodeDevolucion; }
 
+    friend istream& operator>>(istream& is, Ticket& t) {
+        is >> t.codigo >> t.nombre >> t.tiempodeprestamo >> t.id >> t.total >> t.tiempodeDevolucion >> t.idusu >> t.estado;
+        return is;
+    }
+
+    bool operator==(const Ticket& other) const {
+        return codigo == other.codigo &&
+               id == other.id &&
+               strcmp(nombre, other.nombre) == 0 &&
+               tiempodeprestamo == other.tiempodeprestamo &&
+               tiempodeDevolucion == other.tiempodeDevolucion &&
+               total == other.total;
+    }
  /*   void mostrarTicket() {
         cout << "Codigo de producto: " << codigo << endl;
         cout << "Cantidad: " << cantidad << endl;
