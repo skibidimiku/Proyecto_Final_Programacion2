@@ -79,6 +79,15 @@ int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
     UsuArchivo.seekg((id - 1) * sizeof(Usuario), ios::beg);
     UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
 
+    if (usu.getEstatus()==1){
+        cout << "\n\t El usuario esta bloqueado por una multa. No puede realizar prestamos.";
+        archivo.close();
+        UsuArchivo.close();
+        ticketFile.close();
+        return 1;
+    }
+    
+
     if (usu.getcantPrestamos() < 3){
 
         archivo.seekp((idl - 1) * sizeof(Libro), ios::beg);

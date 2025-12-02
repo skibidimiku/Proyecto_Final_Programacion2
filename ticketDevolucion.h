@@ -176,13 +176,19 @@ int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
         } while (op < 0 && op > 1);
     }
 
+    float multaTotal;
+
     switch(op){
         case 1:
             cout << "\n\t Devolviste el libro con ID: " << ticket1.getCodigo();
+            time(&tiempodeDevolucion);
             ticket1.setEstado(0);
+            ticket1.setfechaDevolucion(tiempodeDevolucion);
 
             ticketFile.seekp((ticket1.getId()) * sizeof(Ticket), ios::beg);
             ticketFile.write(reinterpret_cast<const char*>(&ticket1), sizeof(Ticket));
+
+            multaTotal= multaObj.getMulta(id, ticket1.getId());
 
             archivo.seekg((ticket1.getCodigo() - 1) * sizeof(Libro), ios::beg);
             archivo.read(reinterpret_cast<char*>(&registro), sizeof(Libro));
@@ -192,10 +198,10 @@ int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
             archivo.seekp((ticket1.getCodigo() - 1) * sizeof(Libro), ios::beg);
             archivo.write(reinterpret_cast<const char*>(&registro), sizeof(Libro));
 
-            if (multaObj.getMulta(id) > 0){
-                cout << "\n\t Tienes una multa de: $" << multaObj.getMulta(id);
+            if (multaTotal > 0){
+                cout << "\n\t Tienes una multa de: $" << multaTotal << " por la devolucion tardia.";
+                usu.setEstatus(1); //bloquea al usuario
             }
-            
 
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
 
@@ -205,10 +211,63 @@ int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
             break;
         case 2:
             cout << "\n\t Devolviste el libro con ID: " << ticket2.getCodigo();
+            time(&tiempodeDevolucion);
+            ticket2.setEstado(0);
+            ticket2.setfechaDevolucion(tiempodeDevolucion);
+
+            ticketFile.seekp((ticket2.getId()) * sizeof(Ticket), ios::beg);
+            ticketFile.write(reinterpret_cast<const char*>(&ticket2), sizeof(Ticket));
+
+            multaTotal= multaObj.getMulta(id, ticket2.getId());
+
+            archivo.seekg((ticket2.getCodigo() - 1) * sizeof(Libro), ios::beg);
+            archivo.read(reinterpret_cast<char*>(&registro), sizeof(Libro));
+
+            registro.setEjemplaresDisponibles(registro.getEjemplaresDisponibles()+1);
+
+            archivo.seekp((ticket2.getCodigo() - 1) * sizeof(Libro), ios::beg);
+            archivo.write(reinterpret_cast<const char*>(&registro), sizeof(Libro));
+
+            if (multaTotal > 0){
+                cout << "\n\t Tienes una multa de: $" << multaTotal << " por la devolucion tardia.";
+                usu.setEstatus(1); //bloquea al usuario
+            }
+
+            usu.setcantPrestamos(usu.getcantPrestamos()-1);
+
+            UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
+            UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
 
             break;
         case 3:
             cout << "\n\t Devolviste el libro con ID: " << ticket3.getCodigo();
+                        time(&tiempodeDevolucion);
+            ticket3.setEstado(0);
+            ticket3.setfechaDevolucion(tiempodeDevolucion);
+
+            ticketFile.seekp((ticket3.getId()) * sizeof(Ticket), ios::beg);
+            ticketFile.write(reinterpret_cast<const char*>(&ticket3), sizeof(Ticket));
+
+            multaTotal= multaObj.getMulta(id, ticket3.getId());
+
+            archivo.seekg((ticket3.getCodigo() - 1) * sizeof(Libro), ios::beg);
+            archivo.read(reinterpret_cast<char*>(&registro), sizeof(Libro));
+
+            registro.setEjemplaresDisponibles(registro.getEjemplaresDisponibles()+1);
+
+            archivo.seekp((ticket1.getCodigo() - 1) * sizeof(Libro), ios::beg);
+            archivo.write(reinterpret_cast<const char*>(&registro), sizeof(Libro));
+
+            if (multaTotal > 0){
+                cout << "\n\t Tienes una multa de: $" << multaTotal << " por la devolucion tardia.";
+                usu.setEstatus(1); //bloquea al usuario
+            }
+
+            usu.setcantPrestamos(usu.getcantPrestamos()-1);
+
+            UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
+            UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+
             break;
         case 0:
             cout << "\n\t Saliendo de la devolucion...";

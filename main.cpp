@@ -10,7 +10,7 @@
 #include "ModificarLibro.h"
 #include "EliminarLibro.h"
 #include "generarTicket.h"
-#include "Menus_Ayuda.h"
+
 
 using namespace std;
 void menu_Administrador(int id);
@@ -59,7 +59,7 @@ int main(){
             break;
         
         case 4:
-            mostrar_Ayuda_Inicio();
+
             break;
 
         default:
@@ -112,17 +112,17 @@ void menu_Administrador(int id){
             case 5: EliminarLibro();
             break;
             
-            case 6: 
+            case 6: {
                 Libro libro; 
                 GenerarTicketVenta(libro, Usua, id); 
                 break;
+            }
 
             case 7: 
-                //MostrarTotalVentas();2
+                //MostrarTotalVentas();
             break;
 
             case 8:
-                mostrar_Ayuda_Administrador();
                 break;
 
             case 0: cout << "\n\t Saliendo del programa...\n";

@@ -9,7 +9,7 @@ using namespace std;
 
 class multa{
 public:
-    float getMulta(int id){
+    float getMulta(int id, int idtic){
         contenido* libro;
         Ticket ticket;
         Usuario usu;
@@ -44,30 +44,28 @@ public:
         UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
 
 
-        while(ticketFile >> ticket){
-            
-                if(ticket.getId()==id){
-                    archivo.seekg((ticket.getCodigo() - 1) * sizeof(Libro), ios::beg);
-                    archivo.read(reinterpret_cast<char*>(&libro), sizeof(Libro));
-                    if(libro->getCategoria()==1){
-                        libro=new Libro();
-                    }else if(libro->getCategoria()==2){
-                        libro=new Revista();
-                    }else{
-                        libro=new Tesis();
-                    }
-                    time_t fechaDevolucion= ticket.getfechaDevolucion();
-                    time_t fechaPrestamo= ticket.getfechaPrestamo();
-                    double segundos= difftime(fechaDevolucion, fechaPrestamo);
-                    int dias= segundos/86400;
-                    if (dias>7){
-                        multa= libro->calcMulta(dias);
-                    }else{
-                        multa=0.0;
-                    }
-            }
+        archivo.seekg((ticket.getCodigo() - 1) * sizeof(Libro), ios::beg);
+        archivo.read(reinterpret_cast<char*>(&libro), sizeof(Libro));
+        if(libro->getCategoria()==1){
+            libro=new Libro();
+        }else if(libro->getCategoria()==2){
+            libro=new Revista();
+        }else{
+            libro=new Tesis();
+        }
+        time_t fechaDevolucion= ticket.getfechaDevolucion();
+        time_t fechaPrestamo= ticket.getfechaPrestamo();
+        double segundos= difftime(fechaDevolucion, fechaPrestamo);
+        int dias= segundos/86400;
+        if (dias>7){
+            multa= libro->calcMulta(dias);
+        }else{
+            multa=0.0;
         }
 
+        archivo.close();
+        UsuArchivo.close();
+        ticketFile.close();
         return multa;
     }
 };
