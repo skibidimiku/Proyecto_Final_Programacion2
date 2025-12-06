@@ -1,0 +1,9 @@
+#incluír<iostream>
+
+Usando Namespace ETS;
+
+Int principal(){
+    
+cout << "Hola";
+    devolucion 1;
+}
