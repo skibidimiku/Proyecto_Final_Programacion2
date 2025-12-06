@@ -124,7 +124,7 @@ void menu_Administrador(int id){
             case 8:
                 break;
 
-            case 0: cout << "\n\t Saliendo del programa...\n";
+            case 0: cout << "\n\t Saliendo al menu inicial...\n";
                 break;
             default: cout << "\n\t Opcion invalida.\n";
                 break;
@@ -182,7 +182,7 @@ void menu_Usuario(int id){
                 //MostrarTotalVentas();
             break;
 
-            case 0: cout << "\n\t Saliendo del programa...\n";
+            case 0: cout << "\n\t Saliendo al menu inicial...\n";
                 break;
             default: cout << "\n\t Opcion invalida.\n";
                 break;
