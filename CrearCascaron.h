@@ -23,6 +23,7 @@ int creaCascaron(){
     blanco->setEjemplaresDisponibles(0);
 
     Usuario Blancousu;
+    int ids[3]={0,0,0};
     Blancousu.setEstatus(1);
     Blancousu.setContrasena("");
     Blancousu.setCarrera("");
@@ -31,6 +32,7 @@ int creaCascaron(){
     Blancousu.setNombre("");
     Blancousu.setMulta(0.0);
     Blancousu.setDinero(0.0);
+    Blancousu.setidTic(ids);
     Blancousu.setcantPrestamos(0);
     Blancousu.setPermisos(0);
     Blancousu.setTelefono("");
@@ -41,14 +43,25 @@ int creaCascaron(){
         archivo.write(reinterpret_cast<char*>(&blanco), sizeof(Libro));
     }
 
-    fstream ticketFile("ticket.txt", ios::in | ios::app | ios::out);
+    fstream ticketFile("ticket.txt", ios::trunc);
     if(!ticketFile){
-        cout<<"\n\t No se pudo abrir el archivo de ticket.";
+        cout << "\n\t No se pudo crear/abrir ticket.txt";
+        ticketFile.close();
+        archivo.close();
+        UsuArchivo.close();
         return -1;
     }
     
-    ticketFile.clear();
-    
+    fstream TicketDev("TicketDev.txt", ios::trunc);
+    if(!TicketDev){
+        cout << "\n\t No se pudo crear/abrir TicketDev.txt";
+        TicketDev.close();
+        ticketFile.close();
+        archivo.close();
+        UsuArchivo.close();
+        return -1;
+    }
+
     delete blanco;
     ticketFile.close();                                          
     archivo.close();

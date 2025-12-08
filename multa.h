@@ -137,15 +137,16 @@ public:
         return multa;
     }
 
-    void pagarMulta(int id){
+    float pagarMulta(int id){
         Usuario usu;
         int op;
+        float pago=0.0;
         
         fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
         if(!UsuArchivo){
             cout << "\n\t El archivo no se abrio correctamente.";
             UsuArchivo.close();
-            return;
+            return 0.0;
         }
         UsuArchivo.seekg((id-1) * sizeof(Usuario), ios::beg);
         UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
@@ -153,7 +154,7 @@ public:
         if(usu.getMulta() == 0.0){
             cout << "\n\t No tienes multas pendientes." << endl;
             UsuArchivo.close();
-            return;
+            return 0.0;
         }
 
         cout << "\n\t Tu saldo actual es de: $" << usu.getDinero();
@@ -181,13 +182,13 @@ public:
                     break;
                 }
                 
-                usu.setDinero(-usu.getMulta());
-                usu.setMulta(-usu.getMulta());
+                pago=usu.getMulta();
+                usu.setDinero(-pago);
+                usu.setMulta(-pago);
                 cout << "\n\t Has pagado toda tu multa. Gracias!" << endl;
                 usu.setEstatus(1); //desbloquea al usuario
                 break;
             case 2:
-                float pago;
                 cout << "\n\t Tienes disponible: $" << usu.getDinero() << " para pagar tu multa.";
                 cout << "\n\t Ingresa la cantidad que deseas pagar: $";
                 cin >> pago;
@@ -211,8 +212,8 @@ public:
         
         UsuArchivo.seekp((usu.getMatricula() - 1) * sizeof(Usuario), ios::beg);
         UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
-
         UsuArchivo.close();
+        return pago;
     }
 
     bool getSiMulta(int id){
@@ -257,35 +258,49 @@ public:
         while (ticketFile>> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado && cantpres < usu.getcantPrestamos()){
             if (idusu==id && estado==1){
                 cantpres++;
+                contenido* registro = nullptr;
+                Libro tmp;
                 archivo.seekg((codigo - 1) * sizeof(Libro), ios::beg);
-                Libro* tmpLibro = new Libro();
-                archivo.read(reinterpret_cast<char*>(tmpLibro), sizeof(Libro));
+                archivo.read(reinterpret_cast<char*>(&tmp), sizeof(Libro));
+    
+                int cat = tmp.getCategoria();
+                contenido* tmp2 = nullptr;
+                if (cat==1) tmp2 = new Libro();
+                else if (cat==2) tmp2 = new Revista();
+                else tmp2 = new Tesis();
+    
+                // Copiar datos del tmp al objeto polimórfico
+                tmp2->setID(tmp.getID());
+                tmp2->setTitulo(tmp.getTitulo());
+                tmp2->setCategoria(tmp.getCategoria());
+                tmp2->setAutor(tmp.getAutor());
+                tmp2->setEjemeplaresTotales(tmp.getEjemplaresTotales());
+                tmp2->setEjemplaresDisponibles(tmp.getEjemplaresDisponibles());
+    
+                registro = tmp2;
                 
-                contenido* registro = tmpLibro;
-                if(tmpLibro->getCategoria() == 2){
-                    archivo.seekg((codigo - 1) * sizeof(Libro), ios::beg);
-                    Revista* tmpRevista = new Revista();
-                    archivo.read(reinterpret_cast<char*>(tmpRevista), sizeof(Libro));
-                    registro = tmpRevista;
-                }else if(tmpLibro->getCategoria() == 3){
-                    archivo.seekg((codigo - 1) * sizeof(Libro), ios::beg);
-                    Tesis* tmpTesis = new Tesis();
-                    archivo.read(reinterpret_cast<char*>(tmpTesis), sizeof(Libro));
-                    registro = tmpTesis;
+                time_t fechaDevolucion;
+                time(&fechaDevolucion);
+                time_t fechaPrestamo = tiempodeprestamo;
+                if (fechaPrestamo == 0) {
+                    // fecha de préstamo no registrada
+                    archivo.close();
+                    UsuArchivo.close();
+                    ticketFile.close();
+                    return 0.0;
                 }
+
+                double segundos = difftime(fechaDevolucion, fechaPrestamo);
+                if (segundos < 0) segundos = 0; // evita valores negativos si la fecha del sistema cambia hacia atrás
+                int dias = static_cast<int>(segundos / 86400.0);
+
+                multa= registro->calcMulta(dias);
                 
-                time_t fechaDevolucion= tiempodeDevolucion;
-                time_t fechaPrestamo= tiempodeprestamo;
-                double segundos= difftime(fechaDevolucion, fechaPrestamo);
-                int dias= segundos/86400;
-                if (dias>7){
-                    multa= registro->calcMulta(dias);
-                    if (multa>0.0){
-                        archivo.close();
-                        ticketFile.close();
-                        UsuArchivo.close();
-                        return true;
-                    }
+                if (multa>0.0){
+                    archivo.close();
+                    ticketFile.close();
+                    UsuArchivo.close();
+                    return true;
                 }
             }
         }

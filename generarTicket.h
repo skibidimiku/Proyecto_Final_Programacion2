@@ -84,8 +84,7 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
     // Copiar el valor actualizado de vuelta a tmp
     tmp.setEjemplaresDisponibles(registro->getEjemplaresDisponibles());
     
-    archivo.seekp((idl - 1) * sizeof(Libro), ios::beg);
-    archivo.write(reinterpret_cast<const char*>(&tmp), sizeof(Libro));
+
     if (!archivo) {
         cout << "\n\t Error al actualizar la existencia del libro";
         delete registro;
@@ -137,8 +136,7 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
         usu.setcantPrestamos(usu.getcantPrestamos()+1);
         cout << "\n\t Este es tu prestamo numero: " << usu.getcantPrestamos() << endl;
     
-        UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
-        UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+        
 
         time_t tiempoPres;
         time(&tiempoPres);
@@ -156,6 +154,11 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
         // Guardar el codigo tal cual corresponde al ID del libro (1-based)
         ticket.setCodigo(registro->getID());
         ticket.setfechaDevolucion(tiempoDev);
+
+        usu.setidTic(ticket.getId(), usu.getcantPrestamos()-1);
+        
+        UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
+        UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
 
         // Escribir en formato espacio-separado: codigo nombre fechaPrestamo id fechaDevolucion idusu estado
         ticketFile.clear();

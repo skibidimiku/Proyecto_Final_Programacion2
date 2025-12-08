@@ -42,6 +42,7 @@ int matricula;
 char contrasena[30]; // solo aplica a administradores
 int cantPres=0;
 float multa=0.0;
+int idtic[3];
 int Estatus; // 1=Activo  0=Bloqueado 
 int permisos; // 1=Administrador  0=Usuario
 
@@ -60,6 +61,24 @@ public:
 
     void setcantPrestamos(int can){ cantPres=can; }
     int getcantPrestamos() const{ return cantPres; }
+
+    void setidTic( int id, int pos){ idtic[pos]=id; }
+    int getidTic(int pos){ return idtic[pos]; }
+    
+    void setidTic(int ids[3]){
+        for (int i = 0; i < 3; i++){
+            idtic[i] = ids[i];
+        }
+    }
+
+    void aplastaridTic(){ 
+        for (int i = 0; i < 2; i++){
+            if (idtic[i] == 0){
+                idtic[i] = idtic[i+1];
+                idtic[i+1] = 0;
+            }
+        }
+    }
 
     void setContrasena(const char* con){ strncpy(contrasena, con, 30); contrasena[29] = '\0'; }
     const char* getContrasena() const{ return contrasena; }
@@ -146,8 +165,8 @@ public:
         UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
     }
 
-    bool operator==(const string cont) const {
-        return strcmp(this->contrasena, cont.c_str()) == 0;
+    bool operator==(const char* cont) const {
+        return strcmp(this->contrasena, cont) == 0;
     }
 
     void operator +=(int cant){

@@ -67,7 +67,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
     // Leer tickets en formato espacio-separado: codigo nombre fechaPrestamo id fechaDevolucion idusu estado
     ticketFile.seekg(0, ios::beg);
     while(ticketFile >> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado && usu.getcantPrestamos() > cantTic){
-        if (idusu == id && estado == 1){
+        if (idusu == id && usu.getidTic(cantTic) == idtic){
             cantTic++;
             if (cantTic == 1){
                 ticket1.setCodigo(codigo);
@@ -187,6 +187,8 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
     float multaTotal=0.0;
     Libro tmpLib;
 
+    fstream TickeDev("TicketDev.txt", ios::out | ios::app);
+
     switch(op){
         case 1:
             cout << "\n\t Devolviste el libro con ID: " << ticket1.getCodigo()+1;
@@ -221,7 +223,12 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
                 usu.setEstatus(0); //bloquea al usuario
             }
 
+            TickeDev << ticket1.getCodigo() << " " << ticket1.getNombre() << " " << ticket1.getfechaPrestamo() << " "
+                     << ticket1.getId() << " " << ticket1.getfechaDevolucion() << " " << ticket1.getIdusu() << " " << ticket1.getEstado() << endl;
+
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
+            usu.setidTic(0, 0); // Limpiar el ID del ticket devuelto
+            usu.aplastaridTic();
 
             UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
             UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
@@ -250,6 +257,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
                     if(!archivo) cout << "\n\t Error escribiendo datos.dat al devolver libro.";
                 }
             }
+
             multaTotal= multaObj.getMulta(id, ticket2.getId());
 
             if (multaTotal > 0){
@@ -258,7 +266,12 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
                 usu.setEstatus(0); //bloquea al usuario
             }
 
+            TickeDev << ticket2.getCodigo() << " " << ticket2.getNombre() << " " << ticket2.getfechaPrestamo() << " "
+                     << ticket2.getId() << " " << ticket2.getfechaDevolucion() << " " << ticket2.getIdusu() << " " << ticket2.getEstado() << endl;
+
+            usu.setidTic(0,1);
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
+            usu.aplastaridTic();
 
             UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
             UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
@@ -298,6 +311,10 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
                 usu.setEstatus(0); //bloquea al usuario
             }
 
+            TickeDev << ticket3.getCodigo() << " " << ticket3.getNombre() << " " << ticket3.getfechaPrestamo() << " "
+                     << ticket3.getId() << " " << ticket3.getfechaDevolucion() << " " << ticket3.getIdusu() << " " << ticket3.getEstado() << endl;
+
+            usu.setidTic(0,2);
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
 
             UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);

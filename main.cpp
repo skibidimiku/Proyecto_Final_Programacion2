@@ -18,6 +18,9 @@ using namespace std;
 void menu_Administrador(int id);
 void menu_Usuario(int id);
 
+int c=0;
+float Multa_corte=0.0;
+
 int main(){
     int op, id, tipo_menu=0;
     time_t tiempodeinicio;
@@ -160,7 +163,7 @@ void menu_Usuario(int id){
             case 1: DemonstrarLibro();
             break;
             
-            case 2: GenerarTicketPrestamo(Usua, id);
+            case 2:  if(GenerarTicketPrestamo(Usua, id) == 0) c++;
             break;
             
             case 3: GenerarTicketDevolucion(Usua, id);
@@ -169,7 +172,7 @@ void menu_Usuario(int id){
             case 4: Usua.printUsuario(id);
             break;     
             
-            case 5: multaObj.pagarMulta(id);
+            case 5: Multa_corte = multaObj.pagarMulta(id);
                 break;
             
             
