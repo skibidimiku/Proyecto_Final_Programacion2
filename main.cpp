@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <ctime>
+#include <cctype>
 #include "Usuario.h"
 #include "CrearCascaron.h"
 #include "SetUsuario.h"
@@ -17,8 +18,10 @@
 using namespace std;
 void menu_Administrador(int id);
 void menu_Usuario(int id);
+void corte();
+int esnum();
 
-int c=0;
+int c=0,  cdev=0;
 float Multa_corte=0.0;
 
 int main(){
@@ -39,7 +42,7 @@ int main(){
         cout << "\n\t [4] Mostrar menu de ayuda.";
         cout << "\n\t [0] Salir.";
         cout << "\n\n\t Elige una opcion: ";
-        cin >> op;
+        op = esnum();
 
         switch (op)
         {
@@ -49,7 +52,7 @@ int main(){
             
         case 2:
             cout << "\n\t Dame la matricula del usuario: ";
-            cin >> id;
+            id = esnum();
             tipo_menu=usuario.iniciarSecion(id);
             if (tipo_menu == 1){
                 menu_Administrador(id);
@@ -98,7 +101,7 @@ void menu_Administrador(int id){
         cout << "\n\t [7] Mostrar menu de ayuda.";
         cout << "\n\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
-        cin >> selec;
+        selec = esnum();
 
         switch(selec){
             case 1: SetLibro();
@@ -141,7 +144,7 @@ void menu_Usuario(int id){
     Multa multaObj;
 
     if (multaObj.getSiMulta(id)){
-        cout << "\n\t Tienes una multa pendiente, no puedes realizar prestamos hasta pagarla." << endl;
+        cout << "\n\t Tienes una multa pendiente, no puedes realizar prestamos hasta pagarla y devolver el libro si no lo devolviste." << endl;
     }
     
     
@@ -157,7 +160,7 @@ void menu_Usuario(int id){
         cout << "\n\t [7] Mostrar menu de ayuda.";
         cout << "\n\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
-        cin >> selec;
+        selec = esnum();
 
         switch(selec){
             case 1: DemonstrarLibro();
@@ -191,4 +194,37 @@ void menu_Usuario(int id){
                 break;
         }
     }while(selec != 0);
+}
+
+void corte(){
+
+}
+
+int esnum(){
+    string num;
+    while (true){
+        getline(cin, num);
+
+        // Si la cadena está vacía → seguir pidiendo
+        if (num.empty()) {
+            cout << "\n\t No ingreso nada. Intente de nuevo.\n";
+            continue;
+        }
+
+        bool valida = true;
+        for (char c : num) {
+            if (!isdigit(c)) {
+                valida = false;
+                break;
+            }
+        }
+
+        if (!valida){
+            cout << "\n\t No es un numero valido. Intente de nuevo.\n";
+            continue;
+        }
+
+        // Ahora SI es seguro llamar a stoi
+        return stoi(num);
+    }
 }

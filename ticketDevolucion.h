@@ -111,7 +111,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
         cout << "\n\t [0] Salir.";
 
         cout << "\n\t Opcion: ";
-        cin >> op;
+        op = usu.esnumUsu();
 
         while (op < 0 || op > 3){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
@@ -129,7 +129,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
             cout << "\n\t [0] Salir.";
 
             cout << "\n\t Opcion: ";
-            cin >> op;
+            op = usu.esnumUsu();
         } 
         
 
@@ -144,7 +144,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
         cout << "\n\t [0] Salir.";
 
         cout << "\n\t Opcion: ";
-        cin >> op;
+        op = usu.esnumUsu();
 
         while (op < 0 || op > 2){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
@@ -159,7 +159,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
             cout << "\n\t [0] Salir.";
 
             cout << "\n\t Opcion: ";
-            cin >> op;
+            op = usu.esnumUsu();
         }
     }else{
         tiempodeprestamo = ticket1.getfechaPrestamo();
@@ -169,7 +169,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
         cout << "\n\t [0] Salir.";
 
         cout << "\n\t Opcion: ";
-        cin >> op;
+        op = usu.esnumUsu();
 
         while (op < 0 || op > 1){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
@@ -180,7 +180,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
             cout << "\n\t [0] Salir.";
 
             cout << "\n\t Opcion: ";
-            cin >> op;
+            op = usu.esnumUsu();
         }
     }
 
@@ -326,7 +326,9 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
             archivo.close();
             UsuArchivo.close();
             ticketFile.close();
-            return 0;
+            return 1;
+            break;
+        default: cout << "\n\t Opcion invalida.\n";
             break;
     }
     

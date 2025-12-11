@@ -8,7 +8,6 @@ using namespace std;
 #ifndef USUARIO_DEFINED
 #define USUARIO_DEFINED
 
-
 class Persona{
 protected:
     char nombre[30];
@@ -172,8 +171,35 @@ public:
     void operator +=(int cant){
         cantPres=cantPres+cant;
     }
+
+    int esnumUsu(){
+        string num;
+        while (true){
+            getline(cin, num);
+
+            // Si la cadena está vacía → seguir pidiendo
+            if (num.empty()) {
+                cout << "\n\t No ingreso nada. Intente de nuevo.\n";
+                continue;
+            }
+
+            bool valida = true;
+            for (char c : num) {
+                if (!isdigit(c)) {
+                    valida = false;
+                    break;
+                }
+            }
+
+            if (!valida){
+                cout << "\n\t No es un numero valido. Intente de nuevo.\n";
+                continue;
+            }
+
+            // Ahora SI es seguro llamar a stoi
+            return stoi(num);
+        }
+    }
 };
 
 #endif // USUARIO_DEFINED
-
-

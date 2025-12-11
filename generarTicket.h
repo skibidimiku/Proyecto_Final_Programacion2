@@ -34,7 +34,7 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
 
     do {
         cout << "\n\t Ingresa el ID del Libro: ";
-        cin >> idl;
+        idl = usu.esnumUsu();
         if (idl < 1 || idl > 10) {
             cout << "\n\t El ID debe estar entre 1 y 10.";
             cout << "\n\t Quieres intentar buscar otro libro por su ID? s/n: ";

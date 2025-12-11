@@ -43,8 +43,8 @@ int creaCascaron(){
         archivo.write(reinterpret_cast<char*>(&blanco), sizeof(Libro));
     }
 
-    fstream ticketFile("ticket.txt", ios::trunc);
-    if(!ticketFile){
+    ofstream ticketFile("ticket.txt");
+    if(!ticketFile.is_open()){
         cout << "\n\t No se pudo crear/abrir ticket.txt";
         ticketFile.close();
         archivo.close();
@@ -52,8 +52,8 @@ int creaCascaron(){
         return -1;
     }
     
-    fstream TicketDev("TicketDev.txt", ios::trunc);
-    if(!TicketDev){
+    ofstream TicketDev("TicketDev.txt");
+    if(!TicketDev.is_open()){
         cout << "\n\t No se pudo crear/abrir TicketDev.txt";
         TicketDev.close();
         ticketFile.close();

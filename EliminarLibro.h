@@ -2,6 +2,8 @@
 #include <cstring>
 using namespace std;
 
+int esnumliEl();
+
 int EliminarLibro(){
     fstream archivo;
     archivo.open("datos.dat", ios::binary|ios::in|ios::out);
@@ -27,7 +29,7 @@ int EliminarLibro(){
     blanco.setEjemeplaresTotales(0);
     do{
         cout << "\n\t Ingresa el ID del libro a buscar: ";
-        cin >> id;
+        id = esnumliEl();
         if(id < 1 || id > 10){
             cout << "\n\t El ID debe estar entre 1 y 10.";
             cout << "\n\t Quieres intentar buscar otro libro por su ID? s/n: ";
@@ -73,7 +75,7 @@ int EliminarLibro(){
 
         do{
             cout << "\n\n\t Ingresa el ID a buscar: ";
-            cin >> id;
+            id = esnumliEl();
             if(id < 0 || id > 10){
                 cout << "\n\t El ID debe estar entre 1 y 10.";
                 cout << "\n\t Quieres intentar buscar otro ID? s/n: ";
@@ -84,4 +86,33 @@ int EliminarLibro(){
     }
     archivo.close();
     return 0;
+}
+
+int esnumliEl(){
+    string num;
+    while (true){
+        getline(cin, num);
+
+        // Si la cadena está vacía → seguir pidiendo
+        if (num.empty()) {
+            cout << "\n\t No ingreso nada. Intente de nuevo.\n";
+            continue;
+        }
+
+        bool valida = true;
+        for (char c : num) {
+            if (!isdigit(c)) {
+                valida = false;
+                break;
+            }
+        }
+
+        if (!valida){
+            cout << "\n\t No es un numero valido. Intente de nuevo.\n";
+            continue;
+        }
+
+        // Ahora SI es seguro llamar a stoi
+        return stoi(num);
+    }
 }

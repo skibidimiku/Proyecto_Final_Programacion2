@@ -3,6 +3,7 @@
 #include "Libro.h"
 using namespace std;
 
+int esnumliMo();
 
 //se hace uso el INLINE para evitar errores de "redificion."
 inline int ModificarLibro(){
@@ -20,7 +21,7 @@ inline int ModificarLibro(){
     Libro registro;
     do{ 
         cout << "\n\t Ingresa el ID del libro a buscar: ";  
-        cin >> id;
+        id = esnumliMo();
         if(id < 1 || id > 10){
             cout << "\n\t El ID del libro debe estar entre 1 y 10.";
             cout << "\n\t Quieres intentar buscar otro ID? s/n: ";
@@ -88,10 +89,16 @@ inline int ModificarLibro(){
 
         if(cat == true){
         cout << "\n------------------------------------------------";
-        cout << "\n\t Dame la nueva categoria para el libro: ";
+        cout << "\n\t Dame la nueva categoria para el libro[1-3]: ";
         
         int NuevaCategoria;
-        cin >> NuevaCategoria;
+        NuevaCategoria = esnumliMo();
+        while (id < 1 && id > 3){
+            cout << "\n\t La anterior es invalida. Ingresa la id del libro [1-3]: ";
+            NuevaCategoria = esnumliMo();
+        }
+        
+        registro.setCategoria(NuevaCategoria);
 
         archivo.seekp((registro.getID()-1)*sizeof(Libro));
         archivo.write(reinterpret_cast<char*>(&registro), sizeof(Libro));
@@ -116,7 +123,7 @@ inline int ModificarLibro(){
 
         do{
             cout << "\n\t Ingresa el ID a buscar: ";
-            cin >> id;
+            id = esnumliMo();
             if(id < 1 || id > 10){
                 cout << "\n\t El ID debe estar entre 1 y 10.";
                 cout << "\n\t Quieres intentar buscar otro ID? s/n: ";
@@ -127,6 +134,35 @@ inline int ModificarLibro(){
     }
     archivo.close();
     return 0;
+}
+
+int esnumliMo(){
+    string num;
+    while (true){
+        getline(cin, num);
+
+        // Si la cadena está vacía → seguir pidiendo
+        if (num.empty()) {
+            cout << "\n\t No ingreso nada. Intente de nuevo.\n";
+            continue;
+        }
+
+        bool valida = true;
+        for (char c : num) {
+            if (!isdigit(c)) {
+                valida = false;
+                break;
+            }
+        }
+
+        if (!valida){
+            cout << "\n\t No es un numero valido. Intente de nuevo.\n";
+            continue;
+        }
+
+        // Ahora SI es seguro llamar a stoi
+        return stoi(num);
+    }
 }
 
 #endif // MODIFICARPRODUCTO_H

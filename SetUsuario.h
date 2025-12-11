@@ -17,7 +17,12 @@ int SetUsuario(){
     do{
         int id;
         cout << "\n\n\t Ingresa la matricula del usuario [1-10]: ";
-        cin >> id;
+        id = usuar.esnumUsu();
+        while (id < 1 && id > 10){
+            cout << "\n\t La anterior es invalida. Ingresa la matricula del usuario [1-10]: ";
+            id = usuar.esnumUsu();
+        }
+        
         usuar.setMatricula(id);
 
         char nombre[30];
@@ -33,18 +38,18 @@ int SetUsuario(){
         int permisos;
         char contrasena[30];
         cout << "\n\t Ingresa el nivel de usuario (1=administrador 0=Usuario): ";
-        cin >> permisos;
+        permisos = usuar.esnumUsu();
         while (permisos != 0 && permisos != 1){
             cout << "\n\t El valor de permisos no existe";
             cout << "\n\t Ingresa el nivel de usuario (1=administrador 0=Usuario): ";
-            cin >> permisos;
+            permisos = usuar.esnumUsu();
         }
 
-        cout << "\n\t Ingresa la contrasena del administrador: ";
+        cout << "\n\t Ingresa la contrasena: ";
         cin.ignore();
         cin.getline(contrasena, 30);
         while (contrasena[0]=='\0' || contrasena[0]==' '){
-            cout << "\n\t La contrasena no puede estar vacia. Ingresa la contrasena del administrador: ";
+            cout << "\n\t La contrasena no puede estar vacia. Ingresa la contrasena: ";
             cin.getline(contrasena, 30);
         }
 
