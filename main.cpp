@@ -2,6 +2,7 @@
 #include <iostream>
 #include <ctime>
 #include <cctype>
+#include <vector>
 #include "Usuario.h"
 #include "CrearCascaron.h"
 #include "SetUsuario.h"
@@ -87,8 +88,10 @@ int main(){
 }
 
 void menu_Administrador(int id){
-    int selec;
+    int selec, otrid;
+    vector<int> ids;
     Usuario Usua;
+    Multa multaObj;
     
     do{
         cout << "\n---------------------------------------------------------";
@@ -98,8 +101,11 @@ void menu_Administrador(int id){
         cout << "\n\t [3] Modificar algun producto";
         cout << "\n\t [4] Eliminar algun producto";
         cout << "\n\t [5] Registrar usuario";
-        cout << "\n\t [6] ";
-        cout << "\n\t [7] Mostrar menu de ayuda.";
+        cout << "\n\t [6] Elminar usuario";
+        cout << "\n\t [7] Corte del dia.";
+        cout << "\n\t [8] Ajustar condidiones de prestamo.";
+        cout << "\n\t [9] Mostrar menu de ayuda.";
+
         cout << "\n\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
         selec = esnum();
@@ -117,18 +123,20 @@ void menu_Administrador(int id){
             case 4: EliminarLibro();
             break;     
             
-            case 5:
-                SetUsuario();
-                break;
+            case 5: SetUsuario();
+            break;
             
             case 6: 
+            cout << "\n\t Dame la matricula del usuario: ";
+            otrid = esnum();
+            ids= multaObj.gettickets(otrid);
+            Usua.BajaUsuario(otrid, ids);
             break;
 
-            case 7: 
-                mostrar_Ayuda_Administrador();
+            case 7: corte();
             break;
 
-            case 8:
+            case 8:mostrar_Ayuda_Administrador();
                 break;
 
             case 0: cout << "\n\t Saliendo al menu inicial...\n";
@@ -176,7 +184,7 @@ void menu_Usuario(int id){
             case 4: Usua.printUsuario(id);
             break;     
             
-            case 5: Multa_corte = multaObj.pagarMulta(id);
+            case 5: Multa_corte = multaObj.pagarMulta(id); 
                 break;
             
             
@@ -198,7 +206,24 @@ void menu_Usuario(int id){
 }
 
 void corte(){
+    if (c > 0 && cdev > 0 && Multa_corte > 0){
+        cout << "\n\t No ha pasado ni una operacion.";
+        return; 
+    }
+    
+    if (c > 0){
+        cout << "\n\t Se han prestado [" << c << "] libros en esta secion." ;
+    }
 
+    if (Multa_corte > 0){
+        cout << "\n\t Se han recolectado $" << Multa_corte << " por multas en esta secion." ;
+    }
+    
+    if (cdev > 0){
+        cout << "\n\t Se han regresado [" << cdev << "] prestamos en esta secion." ;
+    }
+    
+    
 }
 
 int esnum(){

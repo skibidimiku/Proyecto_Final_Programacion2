@@ -3,6 +3,7 @@
 #include <vector>
 #include <ctime>
 #include <cstring>
+#include "Libro.h"
 using namespace std;
 
 #ifndef USUARIO_DEFINED
@@ -144,27 +145,91 @@ public:
         cout << "\n\t Tiene: $" << usu.getDinero() << " disponible." << endl;
         cout << "\n\t Tiene: " << usu.getcantPrestamos() << " prestamos activos." << endl;
 
+        UsuArchivo.close();
     }
 
-    void BajaUsuario(int id){
-        fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
-        UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
+    void BajaUsuario(int id, vector<int> idtics){
         Usuario usu;
+        int cantTic;
+        char resp;
+        fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
+        if (!UsuArchivo){
+            cout << "\n\t El archivo no se abrio correctamente.";
+            return;
+        }
+        UsuArchivo.seekg((id - 1) * sizeof(Usuario), ios::beg);
+        UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+
+        if (strcmp(usu.getNombre(), "") == 0){
+            cout << "\n\t El usuario no existe." << endl;
+            UsuArchivo.close();
+            return;
+        }
+        
+
+        cout<<"Esta seguro de borrar a "<< usu.getNombre() <<"(s/n)";
+        cin >> resp;
+        while (resp != 'S' && resp != 's' && resp != 'N' && resp != 'n'){
+            cout<<"La opcion no es valida quiere borrar a "<< usu.getNombre() <<"(s/n)";
+            cin >> resp;
+        }
+
+        if (resp == 'N' || resp == 'n'){
+            UsuArchivo.close();
+            return;
+        }
+        
+        cantTic = usu.getcantPrestamos();
+
+        fstream archivo;
+        archivo.open("datos.dat", ios::binary | ios::in | ios::out);
+        if (!archivo) {
+            cout << "\n\t El archivo Producto no se abrio correctamente.";
+            UsuArchivo.close();
+            archivo.close();
+            cin.get();
+            return;
+        }
+
+        for (int i = 0; i < cantTic; i++){ // para regresar los prestamos del usuario
+            if (i >= idtics.size()) break;
+            int codigoLibro = idtics[i];
+
+            if (codigoLibro <= 0) continue; // evitar lecturas inválidas
+
+            Libro tmpLib;
+            archivo.seekg((codigoLibro - 1) * sizeof(Libro), ios::beg);
+            archivo.read(reinterpret_cast<char*>(&tmpLib), sizeof(Libro));
+
+            // corregir el ejemplar disponible
+            tmpLib.setEjemplaresDisponibles(tmpLib.getEjemplaresDisponibles() + 1);
+
+            archivo.seekp((codigoLibro - 1) * sizeof(Libro), ios::beg);
+            archivo.write(reinterpret_cast<const char*>(&tmpLib), sizeof(Libro));
+        }
+
+        int ids[3]={0,0,0};
         usu.setMatricula(0);
         usu.setNombre("");
         usu.setCarrera("");
         usu.setCorreo("");
         usu.setTelefono("");
         usu.setContrasena("");
+        usu.setidTic(ids);
         usu.setEstatus(1);
         usu.setPermisos(0);
         usu.setDinero(0.0);
         usu.setMulta(0.0);
         usu.setcantPrestamos(0);
+
+        UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
         UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+
+        UsuArchivo.close();
+        archivo.close();
     }
 
-    bool operator==(const char* cont) const {
+    bool operator ==(const char* cont) const {
         return strcmp(this->contrasena, cont) == 0;
     }
 

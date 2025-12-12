@@ -100,13 +100,13 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
     if (cantTic==3){
         tiempodeprestamo = ticket1.getfechaPrestamo();
         cout << "\n\t Tienes 3 prestamos activos, Cual deseas devolver?";
-        cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
         tiempodeprestamo = ticket2.getfechaPrestamo();
-        cout << "\n\t [2] Libro: " << ticket2.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
         tiempodeprestamo = ticket3.getfechaPrestamo();
-        cout << "\n\t [3] Libro: " << ticket3.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [3] Libro: " << ticket3.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
         cout << "\n\t [0] Salir.";
 
@@ -118,13 +118,13 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
 
             tiempodeprestamo = ticket1.getfechaPrestamo();
             cout << "\n\t Tienes 3 prestamos activos, Cual deseas devolver?";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
             tiempodeprestamo = ticket2.getfechaPrestamo();
-            cout << "\n\t [2] Libro: " << ticket2.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
             tiempodeprestamo = ticket3.getfechaPrestamo();
-            cout << "\n\t [3] Libro: " << ticket3.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [3] Libro: " << ticket3.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
             cout << "\n\t [0] Salir.";
 
@@ -136,10 +136,10 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
     }else if(cantTic==2){
         tiempodeprestamo = ticket1.getfechaPrestamo();
         cout << "\n\t Tienes 2 prestamos activos, Cual deseas devolver?";
-        cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
         tiempodeprestamo = ticket2.getfechaPrestamo();
-        cout << "\n\t [2] Libro: " << ticket2.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
         cout << "\n\t [0] Salir.";
 
@@ -151,10 +151,10 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
 
             tiempodeprestamo = ticket1.getfechaPrestamo();
             cout << "\n\t Tienes 2 prestamos activos, Cual deseas devolver?";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
             tiempodeprestamo = ticket2.getfechaPrestamo();
-            cout << "\n\t [2] Libro: " << ticket2.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
 
             cout << "\n\t [0] Salir.";
 
@@ -164,7 +164,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
     }else{
         tiempodeprestamo = ticket1.getfechaPrestamo();
         cout << "\n\t Tienes 1 prestamo activo, Lo deseas devolver?";
-        cout << "\n\t Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
         cout << "\n\t [1] Devolver";
         cout << "\n\t [0] Salir.";
 
@@ -176,7 +176,7 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
 
             tiempodeprestamo = ticket1.getfechaPrestamo();
             cout << "\n\t Tienes 1 prestamo activo.";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
             cout << "\n\t [0] Salir.";
 
             cout << "\n\t Opcion: ";

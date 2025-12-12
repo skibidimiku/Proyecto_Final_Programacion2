@@ -9,6 +9,7 @@ using namespace std;
 #ifndef Ticket_DEFINED
 #define Ticket_DEFINED
 
+
 class Ticket {
 private:
 

@@ -297,6 +297,11 @@ public:
                 multa= registro->calcMulta(dias);
                 
                 if (multa>0.0){
+                    usu.setEstatus(0);
+
+                    UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
+                    UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+
                     archivo.close();
                     ticketFile.close();
                     UsuArchivo.close();
@@ -309,6 +314,51 @@ public:
         ticketFile.close();
         UsuArchivo.close();
         return false;
+    }
+
+    vector<int> gettickets(int id){
+        vector<int> v(3, 0);
+        Usuario usu;
+        time_t tiempodeprestamo;
+        time_t tiempodeDevolucion;
+        bool estado; // 1: activo 0: devuelto
+        int idtic, cantTic = 0, idusu, codigo;
+        char nombre[30];
+
+        fstream ticketFile("ticket.txt",  ios::in | ios::out);
+        if (!ticketFile) {
+            cout << "\n\t No se pudo crear/abrir ticket.dat";
+            ticketFile.close();
+            return v;
+        }
+
+        fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
+        if(!UsuArchivo){
+            cout << "\n\t El archivo no se abrio correctamente.";
+            ticketFile.close();
+            UsuArchivo.close();
+            return v;
+        }
+
+        UsuArchivo.seekg((id - 1) * sizeof(Usuario), ios::beg);
+        UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+
+        if(usu.getcantPrestamos() == 0) return v;
+
+        ticketFile.seekg(0, ios::beg);
+        while(ticketFile >> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado && usu.getcantPrestamos() > cantTic){
+            if (idusu == id && usu.getidTic(cantTic) == idtic){
+                cantTic++;
+                if (cantTic == 1){
+                    v[0]=codigo;
+                } else if (cantTic == 2){
+                    v[1]=codigo;
+                } else if (cantTic == 3){
+                    v[3]=codigo;
+                }
+            }
+        }
+        return v;
     }
 };
 
