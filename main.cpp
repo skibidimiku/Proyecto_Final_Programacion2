@@ -15,6 +15,7 @@
 #include "EliminarLibro.h"
 #include "generarTicket.h"
 #include "menus_Ayuda.h"
+#include "FuncionesAux.h"
 
 
 using namespace std;
@@ -104,7 +105,10 @@ void menu_Administrador(int id){
         cout << "\n\t [6] Elminar usuario";
         cout << "\n\t [7] Corte del dia.";
         cout << "\n\t [8] Ajustar condidiones de prestamo.";
-        cout << "\n\t [9] Mostrar menu de ayuda.";
+        cout << "\n\t [9] Usuarios con multas pendientes.";
+        cout << "\n\t [10] Prestamos activos.";
+        cout << "\n\t [11] Top Prestmos.";
+        cout << "\n\t [12] Mostrar menu de ayuda.";
 
         cout << "\n\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
@@ -136,8 +140,20 @@ void menu_Administrador(int id){
             case 7: corte();
             break;
 
-            case 8:mostrar_Ayuda_Administrador();
-                break;
+            case 8:;
+            break;
+
+            case 9: usuariosMorosos();
+            break;
+
+            case 10: prestamosActivos();
+            break;
+
+            case 11: topMatPrestamos();
+            break;
+
+            case 12: mostrar_Ayuda_Administrador();
+            break;
 
             case 0: cout << "\n\t Saliendo al menu inicial...\n";
                 break;
@@ -206,7 +222,7 @@ void menu_Usuario(int id){
 }
 
 void corte(){
-    if (c > 0 && cdev > 0 && Multa_corte > 0){
+    if (c == 0 && cdev == 0 && Multa_corte == 0){
         cout << "\n\t No ha pasado ni una operacion.";
         return; 
     }
