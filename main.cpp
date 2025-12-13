@@ -94,17 +94,17 @@ void menu_Administrador(int id){
     Multa multaObj;
     
     do{
-        cout << "\n---------------------------------------------------------";
+        cout << "\n----------------------------------------------------------------------------------------";
         cout << "\n\t ---> Menu De Administrador <---";
         cout << "\n\t [1] Ingresar nuevo producto";
-        cout << "\n\t [2] Mostrar productos";
-        cout << "\n\t [3] Modificar algun producto";
+        cout << "\t [2] Mostrar productos";
+        cout << "\t [3] Modificar algun producto";
         cout << "\n\t [4] Eliminar algun producto";
-        cout << "\n\t [5] Registrar usuario";
-        cout << "\n\t [6] Elminar usuario";
+        cout << "\t [5] Registrar usuario";
+        cout << "\t [6] Elminar usuario";
         cout << "\n\t [7] Corte del dia.";
-        cout << "\n\t [8] Ajustar condidiones de prestamo.";
-        cout << "\n\t [9] Mostrar menu de ayuda.";
+        cout << "\t [8] Ajustar condidiones de prestamo.";
+        cout << "\t [9] Mostrar menu de ayuda.";
 
         cout << "\n\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
@@ -158,16 +158,16 @@ void menu_Usuario(int id){
     
     
     do{
-        cout << "\n---------------------------------------------------------";
+        cout << "\n----------------------------------------------------------------------------------------";
         cout << "\n\t ---> Menu De Usuario <---";
         cout << "\n\t [1] Mostrar productos";
-        cout << "\n\t [2] Pedir prestamo de libro";
-        cout << "\n\t [3] Devolver libro";
+        cout << "\t [2] Pedir prestamo de libro";
+        cout << "\t [3] Devolver libro";
         cout << "\n\t [4] Mostrar mis datos";
-        cout << "\n\t [5] Pagar multa";
-        cout << "\n\t [6] Explorar mis tickets";
+        cout << "\t [5] Pagar multa";
+        cout << "\t [6] Explorar mis tickets";
         cout << "\n\t [7] Mostrar menu de ayuda.";
-        cout << "\n\t [0] Salir";
+        cout << "\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
         selec = esnum();
 
@@ -178,7 +178,7 @@ void menu_Usuario(int id){
             case 2:  if(GenerarTicketPrestamo(Usua, id) == 0) c++;
             break;
             
-            case 3: GenerarTicketDevolucion(Usua, id);
+            case 3: if(GenerarTicketDevolucion(Usua, id)) cdev++;
             break;   
             
             case 4: Usua.printUsuario(id);
@@ -206,7 +206,7 @@ void menu_Usuario(int id){
 }
 
 void corte(){
-    if (c > 0 && cdev > 0 && Multa_corte > 0){
+    if (c < 1 && cdev < 1 && Multa_corte < 1){
         cout << "\n\t No ha pasado ni una operacion.";
         return; 
     }
@@ -229,6 +229,7 @@ void corte(){
 int esnum(){
     string num;
     while (true){
+        cin >> ws;
         getline(cin, num);
 
         // Si la cadena está vacía → seguir pidiendo

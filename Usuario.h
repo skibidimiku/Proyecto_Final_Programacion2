@@ -98,12 +98,12 @@ public:
 
         while(Archivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario))){
             if (usu.matricula == id && usu.nombre[0] != '\0'){
-                cout << "\n\tDame la contrasena: ";
-                cin.ignore();
+                cout << "\n\t Dame la contrasena: ";
+                cin >> ws;
                 cin.getline(contra, 30);
                 while (!(usu==contra) && intentos < 3){
-                    cout << "\n\tLa contrasena es in correcta te quedan [" << 3 - intentos << "] intentos.";
-                    cout << "\n\tDame la contrasena: ";
+                    cout << "\n\t La contrasena es in correcta te quedan [" << 3 - intentos << "] intentos.";
+                    cout << "\n\t Dame la contrasena: ";
                     cin.getline(contra, 30);
                     intentos++;
                 }
@@ -191,21 +191,24 @@ public:
             return;
         }
 
-        for (int i = 0; i < cantTic; i++){ // para regresar los prestamos del usuario
+        for (size_t i = 0; i < (size_t)cantTic; i++){ // para regresar los prestamos del usuario
             if (i >= idtics.size()) break;
             int codigoLibro = idtics[i];
-
             if (codigoLibro <= 0) continue; // evitar lecturas inválidas
 
             Libro tmpLib;
+            contenido* registro = new Libro();
             archivo.seekg((codigoLibro - 1) * sizeof(Libro), ios::beg);
             archivo.read(reinterpret_cast<char*>(&tmpLib), sizeof(Libro));
 
-            // corregir el ejemplar disponible
-            tmpLib.setEjemplaresDisponibles(tmpLib.getEjemplaresDisponibles() + 1);
+            registro->setTitulo(tmpLib.getTitulo());
+            // corregir el ejemplar total
+            tmpLib.setEjemeplaresTotales(tmpLib.getEjemplaresTotales() - 1);
 
             archivo.seekp((codigoLibro - 1) * sizeof(Libro), ios::beg);
             archivo.write(reinterpret_cast<const char*>(&tmpLib), sizeof(Libro));
+
+            cout << "\n\t Se perdio un ejemplar de: " <<  registro->getTitulo();
         }
 
         int ids[3]={0,0,0};
@@ -240,6 +243,7 @@ public:
     int esnumUsu(){
         string num;
         while (true){
+            cin >> ws;
             getline(cin, num);
 
             // Si la cadena está vacía → seguir pidiendo

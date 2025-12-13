@@ -27,7 +27,7 @@ int SetUsuario(){
 
         char nombre[30];
         cout << "\n\t Ingresa el nombre del usuario: ";
-        cin.ignore();
+        cin >> ws;
         cin.getline(nombre, 30);
         while (nombre[0]=='\0' || nombre[0]==' '){
             cout << "\n\t El nombre no puede estar vacio. Ingresa el nombre del usuario: ";
@@ -46,7 +46,7 @@ int SetUsuario(){
         }
 
         cout << "\n\t Ingresa la contrasena: ";
-        cin.ignore();
+        cin >> ws;
         cin.getline(contrasena, 30);
         while (contrasena[0]=='\0' || contrasena[0]==' '){
             cout << "\n\t La contrasena no puede estar vacia. Ingresa la contrasena: ";
@@ -58,7 +58,7 @@ int SetUsuario(){
 
         char carrera[30];
         cout << "\n\t Ingresa la carrera: ";
-        cin.ignore();
+        cin >> ws;
         cin.getline(carrera, 30);
         while (carrera[0]=='\0' || carrera[0]==' '){
             cout << "\n\t La carrera no puede estar vacia. Ingresa la carrera: ";
@@ -69,7 +69,7 @@ int SetUsuario(){
 
         char correo[30];
         cout << "\n\t Ingresa el correo: ";
-        cin.ignore();
+        cin >> ws;
         cin.getline(correo, 30);
         while (correo[0]=='\0' || correo[0]==' '){
             cout << "\n\t El correo no puede estar vacio. Ingresa el correo: ";
@@ -80,7 +80,7 @@ int SetUsuario(){
 
         char tel[30];
         cout << "\n\t Ingresa tu telefono: ";
-        cin.ignore();
+        cin >> ws;
         cin.getline(tel, 30);
         while (tel[0]=='\0' || tel[0]==' '){
             cout << "\n\t El telefono no puede estar vacio. Ingresa el telefono: ";
