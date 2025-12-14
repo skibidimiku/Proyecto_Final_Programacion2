@@ -1,3 +1,6 @@
+#ifndef GENTI_DEFINED
+#define GENTI_DEFINED
+
 #include <iostream>
 #include <fstream>
 #include <cstring>
@@ -5,16 +8,13 @@
 #include "Libro.h"
 #include "Usuario.h"
 #include "Ticket.h"
+#include "fecha.h"
 
 using namespace std;
 
 int GenerarTicketPrestamo(Usuario& usu, int id) {
-    time_t tiempodeprestamo;
-    time_t tiempodeDevolucion;
-    int codigo;
+    int codigo, idtic, idusu, dia, mes, anio;
     bool estado; // 1: activo 0: devuelto
-    int idtic;
-    int idusu;
     char nombre[30];
 
     Ticket ticket;
@@ -138,12 +138,9 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
     
         
 
-        time_t tiempoPres;
-        time(&tiempoPres);
+        Fecha fecha;
         // fechaDevolucion inicial 0 (no devuelto aún)
-        time_t tiempoDev = 0;
-        ticket.setfechaPrestamo(tiempoPres);
-        while(ticketFile>> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado){
+        while(ticketFile>> codigo >> nombre >> dia >> mes >> anio >> idtic >> idusu >> estado){
             //busca el ultimo ticket para asignar el siguiente codigo
             cont++;
         }
@@ -151,10 +148,11 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
         ticket.setEstado(1);
         ticket.setIdusu(usu.getMatricula());
         ticket.setNombre(usu.getNombre());
+        ticket.setDiat(fecha.getDia());
+        ticket.setMest(fecha.getmes());
+        ticket.setAniot(fecha.getAnio());
         // Guardar el codigo tal cual corresponde al ID del libro (1-based)
         ticket.setCodigo(registro->getID());
-        ticket.setfechaDevolucion(tiempoDev);
-
         usu.setidTic(ticket.getId(), usu.getcantPrestamos()-1);
         
         UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
@@ -163,18 +161,16 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
         // Escribir en formato espacio-separado: codigo nombre fechaPrestamo id fechaDevolucion idusu estado
         ticketFile.clear();
         ticketFile.seekp(0, ios::end);
-        ticketFile << " " << ticket.getCodigo() << " " << ticket.getNombre() << " " << ticket.getfechaPrestamo() << " " 
-                   << ticket.getId() << " " << ticket.getfechaDevolucion() << " " << ticket.getIdusu() << " " << ticket.getEstado() << endl;
+        ticketFile << ticket.getCodigo() << " " << ticket.getNombre() << " " << ticket.getDiat() << " " << ticket.getmest() 
+        << " " << ticket.getAniot() << " " << ticket.getId() << " "  <<  ticket.getIdusu() << " " << ticket.getEstado() << endl;
 
         
-        time_t fec= ticket.getfechaPrestamo();
-        char* fecha= ctime(&fec);
         cout << "\t ====== Ticket De Prestamo ======\n";
         cout << "\t Id del ticket: " << ticket.getId() << "\n";
         cout << "\t Nombre del usuario: " << ticket.getNombre() << "\n";
         cout << "\t Id del contenido: " << ticket.getCodigo() << "\n";
         cout << "\t Id del usuario: " << ticket.getIdusu() << "\n";
-        cout << "\t Fecha Prestamo:"<< fecha;
+        fecha.mostrar();
         registro->imprCond();
         cout << "\t ==========================\n";
 
@@ -194,3 +190,5 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
 
     return 0;
 }
+
+#endif

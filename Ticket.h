@@ -4,6 +4,7 @@
 #include <ctime>
 #include <fstream>
 #include "Usuario.h"
+#include "fecha.h"
 
 using namespace std;
 
@@ -14,8 +15,9 @@ using namespace std;
 class Ticket {
 private:
 
-time_t tiempodeprestamo;
-time_t tiempodeDevolucion;
+int diat;
+int mest;
+int aniot;
 int codigo;
 bool estado; // 1: activo 0: devuelto
 int id;
@@ -36,10 +38,13 @@ public:
     int getIdusu(){ return idusu; }
     void setNombre(const char* nom) { strncpy(nombre, nom, 30); nombre[29] = '\0'; }
     const char* getNombre() const { return nombre; }
-    void setfechaPrestamo(time_t fechaAct){ tiempodeprestamo=fechaAct; }
-    time_t getfechaPrestamo(){ return tiempodeprestamo; }
-    void setfechaDevolucion(time_t fechaAct){ tiempodeDevolucion=fechaAct; }
-    time_t getfechaDevolucion(){ return tiempodeDevolucion; }
+    void setDiat(int d){ diat=d; }
+    void setMest(int m){ mest=m; }
+    void setAniot(int a){ aniot=a; }
+    int getDiat(){ return diat; }
+    int getmest(){ return mest; }
+    int getAniot(){ return aniot; }
+
 
     /* friend istream& operator>>(istream& is, Ticket& t) {
         string line;
@@ -79,10 +84,11 @@ public:
         Ticket ticket;
         Usuario usu;
         int c=0;
-        int codigo, idtic, idusu, estado;
-        char nombre[30];
-        time_t tiempodeprestamo, tiempodeDevolucion;
-        time_t tiempoprestamo;    
+        int codigo, idtic, idusu, dia, mes, anio;
+        char nombreimp[30];
+        bool estado; // 1: activo 0: devuelto
+        
+        
         fstream ticketFile("ticket.txt", ios::in | ios::app | ios::out);
         if (!ticketFile) {
             cout << "\n\t No se pudo crear/abrir ticket.dat";
@@ -110,17 +116,17 @@ public:
         
 
         ticketFile.seekg(0, ios::beg);
-        while (ticketFile>> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado  && usu.getcantPrestamos() > c){
+        while (ticketFile>> codigo >> nombreimp >> dia >> mes >> anio >> idtic >> idusu >> estado  && usu.getcantPrestamos() > c){
             if (ticket.getIdusu() == id && ticket.getEstado() == 1){
                 c++;
                 cout << "\t ====== Ticket ======\n";
-                cout << "\t Id del ticket: " << id << "\n";
-                cout << "\t Nombre del usuario: " << ticket.getNombre() << "\n";
-                cout << "\t Id del contenido: " << ticket.getCodigo() << "\n";
-                cout << "\t Id del usuario: " << ticket.getIdusu() << "\n";
-                tiempoprestamo = ticket.getfechaPrestamo();
-                char* fechaPres= ctime(&tiempoprestamo);
-                cout << "\t Fecha Prestamo:"<< fechaPres << "\n";
+                cout << "\t Id del ticket: " << idtic << "\n";
+                cout << "\t Nombre del usuario: " << nombreimp << "\n";
+                cout << "\t Id del contenido: " << codigo << "\n";
+                cout << "\t Id del usuario: " << id << "\n";
+                Fecha fechpres(dia, mes, anio);
+                cout << "\t Fecha Prestamo:";
+                fechpres.mostrar();
                 cout << "\t Estado del ticket: " << (ticket.getEstado() ? "Activo" : "Devuelto") << "\n";
                 cout << "\t ==========================\n";
             }
@@ -129,30 +135,6 @@ public:
         
     }
 
-    bool operator==(const Ticket& other) const {
-        return codigo == other.codigo &&
-               id == other.id &&
-               strcmp(nombre, other.nombre) == 0 &&
-               tiempodeprestamo == other.tiempodeprestamo &&
-               tiempodeDevolucion == other.tiempodeDevolucion && 
-               idusu == other.idusu && estado == other.estado;
-    }
- /*   void mostrarTicket() {
-        cout << "Codigo de producto: " << codigo << endl;
-        cout << "Cantidad: " << cantidad << endl;
-        cout << "Subtotal: " << subtotal << endl;
-    }
-
-    friend Ticket operator+(const Ticket& t1, const Ticket& t2) {
-        return Ticket(0, t1.cantidad + t2.cantidad, t1.subtotal + t2.subtotal, t1.total + t2.total);
-    }
-
-    friend ostream& operator<<(ostream& os, const Ticket& t) {
-        os << "Resumen de venta:" << endl;
-        os << "Cantidad total: " << t.cantidad << endl;
-        os << "Total: $" << t.subtotal << endl;
-        return os;
-    }*/
 };
 
 #endif   

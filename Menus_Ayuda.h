@@ -1,3 +1,6 @@
+#ifndef MENUAY_DEFINED
+#define MENUAY_DEFINED
+
 #include <iostream>
 using namespace std;
 
@@ -155,3 +158,5 @@ int mostrar_Ayuda_Usuario(){
 
     return 0;
 }
+
+#endif

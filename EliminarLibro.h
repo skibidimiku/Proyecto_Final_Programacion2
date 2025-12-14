@@ -1,3 +1,6 @@
+#ifndef ELILI_DEFINED
+#define ELILI_DEFINED
+
 #include "Libro.h"
 #include <cstring>
 using namespace std;
@@ -116,3 +119,5 @@ int esnumliEl(){
         return stoi(num);
     }
 }
+
+#endif

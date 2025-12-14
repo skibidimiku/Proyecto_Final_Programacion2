@@ -1,3 +1,6 @@
+#ifndef FECHA_DEFINED
+#define FECHA_DEFINED
+
 #include <iostream>
 #include <chrono>
 #include <ctime>
@@ -40,11 +43,13 @@ public:
     int getmes(){ return mes; }
     int getAnio(){ return anio; }
 
+    void setfecha(int d, int m, int a){ dia=d; mes=m; anio=a; }
+
     // Fecha personalizada
     Fecha(int d, int m, int a) : dia(d), mes(m), anio(a) {}
 
     void mostrar() const {
-        cout << "\n\t " << dia << "/" << mes << "/" << anio << endl;
+        cout << "\t " << dia << "/" << mes << "/" << anio << endl;
     }
 
     // ===== Días entre dos fechas =====
@@ -54,3 +59,5 @@ public:
     }
 
 };
+
+#endif 

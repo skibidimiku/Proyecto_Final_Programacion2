@@ -1,3 +1,6 @@
+#ifndef CREACAS_DEFINED
+#define CREACAS_DEFINED
+
 #include <iostream>
 #include <fstream>
 using namespace std;
@@ -69,3 +72,5 @@ int creaCascaron(){
     
     return 1;
 }
+
+#endif
