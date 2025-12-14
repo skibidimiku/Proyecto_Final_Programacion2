@@ -191,7 +191,7 @@ public:
             return;
         }
 
-        for (int i = 0; i < cantTic; i++){ // para regresar los prestamos del usuario
+        for (size_t i = 0; i < (size_t)cantTic; i++){ // para regresar los prestamos del usuario
             if (i >= idtics.size()) break;
             int codigoLibro = idtics[i];
 
@@ -240,6 +240,7 @@ public:
     int esnumUsu(){
         string num;
         while (true){
+            cin>>ws;
             getline(cin, num);
 
             // Si la cadena está vacía → seguir pidiendo

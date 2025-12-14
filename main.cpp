@@ -4,6 +4,7 @@
 #include <cctype>
 #include <vector>
 #include "Usuario.h"
+#include "fecha.h"
 #include "CrearCascaron.h"
 #include "SetUsuario.h"
 #include "ticketDevolucion.h"
