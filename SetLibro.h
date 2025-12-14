@@ -33,17 +33,18 @@ int SetLibro() {
 
         char titulo[30];
         cout << "\n\t Ingresa el TITULO del LIBRO: ";
-        cin.ignore();
+        cin>>ws;
         cin.getline(titulo, 30);
 
         while (titulo[0]=='\0' || titulo[0]==' '){
-            cout << "\n\t El nombre no puede estar vacio. Ingresa el nombre del usuario: ";
+            cout << "\n\t El nombre no puede estar vacio. Ingresa el nombre del libro: ";
             cin.getline(titulo, 30);
         }
 
         registro->setTitulo(titulo );
 
         int cat;
+        cout << "\n\t 1) Libro \t 2) Resista \t 3)Tesis";
         cout << "\n\t Ingresa la CATEGORIA del LIBRO[1-3]: ";
         cat = esnumli();
 
@@ -57,11 +58,11 @@ int SetLibro() {
 
         char aut[30];
         cout << "\n\t Ingresa el AUTOR del LIBRO: ";
-        cin.ignore();
+        cin>>ws;
         cin.getline(aut, 30);
 
         while (aut[0]=='\0' || aut[0]==' '){
-            cout << "\n\t El nombre no puede estar vacio. Ingresa el nombre del usuario: ";
+            cout << "\n\t El nombre no puede estar vacio. Ingresa el nombre del autor: ";
             cin.getline(aut, 30);
         }
 
@@ -73,7 +74,7 @@ int SetLibro() {
         existencia = esnumli();
 
         while (existencia <= 0){
-            cout << "\n\t No puede ser meno a 1. Ingresa la nueva cantidad [1-3]: ";
+            cout << "\n\t No puede ser menor a 1. Ingresa la nueva cantidad [1-3]: ";
             existencia = esnumli();
         }
         
@@ -109,6 +110,7 @@ int SetLibro() {
 int esnumli(){
     string num;
     while (true){
+        cin>>ws;
         getline(cin, num);
 
         // Si la cadena está vacía → seguir pidiendo

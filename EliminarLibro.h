@@ -94,6 +94,7 @@ int EliminarLibro(){
 int esnumliEl(){
     string num;
     while (true){
+        cin>>ws;
         getline(cin, num);
 
         // Si la cadena está vacía → seguir pidiendo
