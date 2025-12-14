@@ -1,3 +1,6 @@
+#ifndef SETUSU_DEFINED
+#define SETUSU_DEFINED
+
 #include <iostream>
 #include <fstream>
 #include "Usuario.h"
@@ -110,3 +113,5 @@ int SetUsuario(){
 
     return 1;
 }
+
+#endif

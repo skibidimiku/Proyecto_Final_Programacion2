@@ -7,6 +7,7 @@
 #include "Libro.h"
 #include "Usuario.h"
 #include "Ticket.h"
+#include "fecha.h"
 
 using namespace std;
 
@@ -44,21 +45,20 @@ public:
         }
 
         // Leer ticket en formato espacio-separado: codigo nombre fechaPrestamo id fechaDevolucion idusu estado
-        int codigo, idusu_tmp, estado_tmp;
+        int codigo, idusu_tmp, estado_tmp, dia_tmp, mes_tmp, anio_tmp;
         char nombre_tmp[30];
-        time_t fechaPrestamo_tmp, fechaDevolucion_tmp;
         int idtic_tmp;
-        cout << "llegue aqui 1" << endl;
         
         ticketFile.seekg(0, ios::beg);
         bool ticketEncontrado = false;
-        while(ticketFile >> codigo >> nombre_tmp >> fechaPrestamo_tmp >> idtic_tmp >> fechaDevolucion_tmp >> idusu_tmp >> estado_tmp){
+        while(ticketFile >> codigo >> nombre_tmp >> dia_tmp >> mes_tmp >> anio_tmp >> idtic_tmp >> idusu_tmp >> estado_tmp){
             if(idtic_tmp == idtic){
                 ticket.setCodigo(codigo);
                 ticket.setNombre(nombre_tmp);
-                ticket.setfechaPrestamo(fechaPrestamo_tmp);
                 ticket.setId(idtic_tmp);
-                ticket.setfechaDevolucion(fechaDevolucion_tmp);
+                ticket.setDiat(dia_tmp);
+                ticket.setMest(mes_tmp);
+                ticket.setAniot(anio_tmp);
                 ticket.setIdusu(idusu_tmp);
                 ticket.setEstado(estado_tmp);
                 ticketEncontrado = true;
@@ -107,22 +107,17 @@ public:
         libro = tmp2;
 
         // Calcular diferencia de días entre fecha de préstamo y ahora (fecha de devolución)
-        time_t fechaDevolucion;
-        time(&fechaDevolucion);
-        time_t fechaPrestamo = ticket.getfechaPrestamo();
-        if (fechaPrestamo == 0) {
-            // fecha de préstamo no registrada
-            archivo.close();
-            UsuArchivo.close();
-            ticketFile.close();
-            return 0.0;
-        }
-        double segundos = difftime(fechaDevolucion, fechaPrestamo);
-        if (segundos < 0) segundos = 0; // evita valores negativos si la fecha del sistema cambia hacia atrás
-        int dias = static_cast<int>(segundos / 86400.0);
+       
+        
+        Fecha fechdev;
+        Fecha fechpres(ticket.getDiat(), ticket.getmest(), ticket.getAniot());
 
-        // Delegar el cálculo de la multa a la implementación concreta
-        multa = libro->calcMulta(dias);
+        int dias = fechpres.diasEntre(fechdev);
+
+        if (dias > 0){
+            // Delegar el cálculo de la multa a la implementación concreta
+            multa = libro->calcMulta(dias);
+        }
 
         if(multa>0.0){
             usu.setEstatus(0); //bloquea al usuario
@@ -217,12 +212,8 @@ public:
     }
 
     bool getSiMulta(int id){
-        int codigo;
-        time_t tiempodeprestamo;
-        time_t tiempodeDevolucion;
+        int codigo, idtic, idusu, dia, mes, anio;
         bool estado; // 1: activo 0: devuelto
-        int idtic;
-        int idusu;
         char nombre[30];
         Usuario usu;
         
@@ -255,7 +246,7 @@ public:
         int cantpres=0;
         float multa=0.0;
 
-        while (ticketFile>> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado && cantpres < usu.getcantPrestamos()){
+        while (ticketFile>> codigo >> nombre >> dia >> mes >> anio >> idtic >> idusu >> estado && cantpres < usu.getcantPrestamos()){
             if (idusu==id && estado==1){
                 cantpres++;
                 contenido* registro = nullptr;
@@ -278,23 +269,16 @@ public:
                 tmp2->setEjemplaresDisponibles(tmp.getEjemplaresDisponibles());
     
                 registro = tmp2;
-                
-                time_t fechaDevolucion;
-                time(&fechaDevolucion);
-                time_t fechaPrestamo = tiempodeprestamo;
-                if (fechaPrestamo == 0) {
-                    // fecha de préstamo no registrada
-                    archivo.close();
-                    UsuArchivo.close();
-                    ticketFile.close();
-                    return 0.0;
+
+                Fecha fechdev;
+                Fecha fechpres(dia, mes, anio);
+
+                int dias = fechpres.diasEntre(fechdev);
+
+                if (dias > 0){
+                    // Delegar el cálculo de la multa a la implementación concreta
+                    multa = registro->calcMulta(dias);
                 }
-
-                double segundos = difftime(fechaDevolucion, fechaPrestamo);
-                if (segundos < 0) segundos = 0; // evita valores negativos si la fecha del sistema cambia hacia atrás
-                int dias = static_cast<int>(segundos / 86400.0);
-
-                multa= registro->calcMulta(dias);
                 
                 if (multa>0.0){
                     usu.setEstatus(0);

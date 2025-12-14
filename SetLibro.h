@@ -1,3 +1,6 @@
+#ifndef SETLI_DEFINED
+#define SETLI_DEFINED
+
 #include <iostream>
 #include <fstream>
 #include "Libro.h"
@@ -131,3 +134,5 @@ int esnumli(){
         return stoi(num);
     }
 }
+
+#endif

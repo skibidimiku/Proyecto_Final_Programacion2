@@ -13,14 +13,11 @@
 using namespace std;
 
 int GenerarTicketDevolucion(Usuario& usu, int id) {
-    time_t tiempodeprestamo;
-    time_t tiempodeDevolucion;
-    int codigo;
+    int codigo, idtic, idusu, dia, mes, anio;
     bool estado; // 1: activo 0: devuelto
-    int idtic;
-    int idusu;
     char nombre[30];
     Multa multaObj;
+    Fecha fecha;
     
     Ticket ticket1;
     Ticket ticket2;
@@ -66,31 +63,34 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
 
     // Leer tickets en formato espacio-separado: codigo nombre fechaPrestamo id fechaDevolucion idusu estado
     ticketFile.seekg(0, ios::beg);
-    while(ticketFile >> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado && usu.getcantPrestamos() > cantTic){
+    while(ticketFile>> codigo >> nombre >> dia >> mes >> anio >> idtic >> idusu >> estado && usu.getcantPrestamos() > cantTic){
         if (idusu == id && usu.getidTic(cantTic) == idtic){
             cantTic++;
             if (cantTic == 1){
                 ticket1.setCodigo(codigo);
                 ticket1.setNombre(nombre);
-                ticket1.setfechaPrestamo(tiempodeprestamo);
+                ticket1.setDiat(dia);
+                ticket1.setMest(mes);
+                ticket1.setAniot(anio);
                 ticket1.setId(idtic);
-                ticket1.setfechaDevolucion(tiempodeDevolucion);
                 ticket1.setIdusu(idusu);
                 ticket1.setEstado(estado);
             } else if (cantTic == 2){
                 ticket2.setCodigo(codigo);
                 ticket2.setNombre(nombre);
-                ticket2.setfechaPrestamo(tiempodeprestamo);
+                ticket2.setDiat(dia);
+                ticket2.setMest(mes);
+                ticket2.setAniot(anio);
                 ticket2.setId(idtic);
-                ticket2.setfechaDevolucion(tiempodeDevolucion);
                 ticket2.setIdusu(idusu);
                 ticket2.setEstado(estado);
             } else if (cantTic == 3){
                 ticket3.setCodigo(codigo);
                 ticket3.setNombre(nombre);
-                ticket3.setfechaPrestamo(tiempodeprestamo);
+                ticket3.setDiat(dia);
+                ticket3.setMest(mes);
+                ticket3.setAniot(anio);
                 ticket3.setId(idtic);
-                ticket3.setfechaDevolucion(tiempodeDevolucion);
                 ticket3.setIdusu(idusu);
                 ticket3.setEstado(estado);
             }
@@ -98,15 +98,18 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
     }
 
     if (cantTic==3){
-        tiempodeprestamo = ticket1.getfechaPrestamo();
+        Fecha fecha(ticket1.getDiat(), ticket1.getmest(), ticket1.getAniot());
         cout << "\n\t Tienes 3 prestamos activos, Cual deseas devolver?";
-        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el:";
+        fecha.mostrar();
 
-        tiempodeprestamo = ticket2.getfechaPrestamo();
-        cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        fecha.setfecha(ticket2.getDiat(), ticket2.getmest(), ticket2.getAniot());
+        cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el:";
+        fecha.mostrar();
 
-        tiempodeprestamo = ticket3.getfechaPrestamo();
-        cout << "\n\t [3] Libro: " << ticket3.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        fecha.setfecha(ticket3.getDiat(), ticket3.getmest(), ticket3.getAniot());
+        cout << "\n\t [3] Libro: " << ticket3.getCodigo() << " Prestado el:";
+        fecha.mostrar();
 
         cout << "\n\t [0] Salir.";
 
@@ -116,15 +119,18 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
         while (op < 0 || op > 3){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
 
-            tiempodeprestamo = ticket1.getfechaPrestamo();
+            fecha.setfecha(ticket1.getDiat(), ticket1.getmest(), ticket1.getAniot());
             cout << "\n\t Tienes 3 prestamos activos, Cual deseas devolver?";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el:";
+            fecha.mostrar();
 
-            tiempodeprestamo = ticket2.getfechaPrestamo();
-            cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            fecha.setfecha(ticket2.getDiat(), ticket2.getmest(), ticket2.getAniot());
+            cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el:";
+            fecha.mostrar();
 
-            tiempodeprestamo = ticket3.getfechaPrestamo();
-            cout << "\n\t [3] Libro: " << ticket3.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            fecha.setfecha(ticket3.getDiat(), ticket3.getmest(), ticket3.getAniot());
+            cout << "\n\t [3] Libro: " << ticket3.getCodigo() << " Prestado el:";
+            fecha.mostrar();
 
             cout << "\n\t [0] Salir.";
 
@@ -134,12 +140,14 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
         
 
     }else if(cantTic==2){
-        tiempodeprestamo = ticket1.getfechaPrestamo();
+        Fecha fecha(ticket1.getDiat(), ticket1.getmest(), ticket1.getAniot());
         cout << "\n\t Tienes 2 prestamos activos, Cual deseas devolver?";
-        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el:";
+        fecha.mostrar();
 
-        tiempodeprestamo = ticket2.getfechaPrestamo();
-        cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        fecha.setfecha(ticket2.getDiat(), ticket2.getmest(), ticket2.getAniot());
+        cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el:";
+        fecha.mostrar();
 
         cout << "\n\t [0] Salir.";
 
@@ -149,12 +157,14 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
         while (op < 0 || op > 2){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
 
-            tiempodeprestamo = ticket1.getfechaPrestamo();
+            fecha.setfecha(ticket1.getDiat(), ticket1.getmest(), ticket1.getAniot());
             cout << "\n\t Tienes 2 prestamos activos, Cual deseas devolver?";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el:";
+            fecha.mostrar();
 
-            tiempodeprestamo = ticket2.getfechaPrestamo();
-            cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            fecha.setfecha(ticket2.getDiat(), ticket2.getmest(), ticket2.getAniot());
+            cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el:";
+            fecha.mostrar();
 
             cout << "\n\t [0] Salir.";
 
@@ -162,9 +172,11 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
             op = usu.esnumUsu();
         }
     }else{
-        tiempodeprestamo = ticket1.getfechaPrestamo();
-        cout << "\n\t Tienes 1 prestamo activo, Lo deseas devolver?";
-        cout << "\n\t Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        Fecha fecha(ticket1.getDiat(), ticket1.getmest(), ticket1.getAniot());
+        cout << "\n\t Tienes 1 prestamos activos, Cual deseas devolver?";
+        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el:";
+        fecha.mostrar();
+
         cout << "\n\t [1] Devolver";
         cout << "\n\t [0] Salir.";
 
@@ -174,9 +186,9 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
         while (op < 0 || op > 1){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
 
-            tiempodeprestamo = ticket1.getfechaPrestamo();
             cout << "\n\t Tienes 1 prestamo activo.";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el:";
+            fecha.mostrar();
             cout << "\n\t [0] Salir.";
 
             cout << "\n\t Opcion: ";
@@ -189,12 +201,15 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
 
     fstream TickeDev("TicketDev.txt", ios::out | ios::app);
 
+    Fecha fechdev;
+
     switch(op){
         case 1:
-            cout << "\n\t Devolviste el libro con ID: " << ticket1.getCodigo()+1;
-            time(&tiempodeDevolucion);
+            cout << "\n\t Devolviste el libro con ID: " << ticket1.getCodigo();
             ticket1.setEstado(0);
-            ticket1.setfechaDevolucion(tiempodeDevolucion);
+            ticket1.setDiat(fechdev.getDia());
+            ticket1.setMest(fechdev.getmes());
+            ticket1.setAniot(fechdev.getAnio());
             
             // Escribir cambio en ticket.txt (formato espacio-separado, sin seekp en texto)
             // Nota: Marcar como devuelto agregando nueva línea (mejor que tratar de actualizar línea existente)
@@ -223,9 +238,8 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
                 usu.setEstatus(0); //bloquea al usuario
             }
 
-            TickeDev << ticket1.getCodigo() << " " << ticket1.getNombre() << " " << ticket1.getfechaPrestamo() << " "
-                     << ticket1.getId() << " " << ticket1.getfechaDevolucion() << " " << ticket1.getIdusu() << " " << ticket1.getEstado() << endl;
-
+           TickeDev << ticket1.getCodigo() << " " << ticket1.getNombre() << " " << ticket1.getDiat() << " " << ticket1.getmest() 
+            << " " << ticket1.getAniot() << " " << ticket1.getId() << " "  <<  ticket1.getIdusu() << " " << ticket1.getEstado() << endl;
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
             usu.setidTic(0, 0); // Limpiar el ID del ticket devuelto
             usu.aplastaridTic();
@@ -236,9 +250,10 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
             break;
         case 2:
             cout << "\n\t Devolviste el libro con ID: " << ticket2.getCodigo();
-            time(&tiempodeDevolucion);
             ticket2.setEstado(0);
-            ticket2.setfechaDevolucion(tiempodeDevolucion);
+            ticket2.setDiat(fechdev.getDia());
+            ticket2.setMest(fechdev.getmes());
+            ticket2.setAniot(fechdev.getAnio());
 
             // Escribir cambio en ticket.txt (formato espacio-separado, sin seekp en texto)
             // Nota: Marcar como devuelto agregando nueva línea (mejor que tratar de actualizar línea existente)
@@ -266,8 +281,8 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
                 usu.setEstatus(0); //bloquea al usuario
             }
 
-            TickeDev << ticket2.getCodigo() << " " << ticket2.getNombre() << " " << ticket2.getfechaPrestamo() << " "
-                     << ticket2.getId() << " " << ticket2.getfechaDevolucion() << " " << ticket2.getIdusu() << " " << ticket2.getEstado() << endl;
+             TickeDev << ticket2.getCodigo() << " " << ticket2.getNombre() << " " << ticket2.getDiat() << " " << ticket2.getmest() 
+            << " " << ticket2.getAniot() << " " << ticket2.getId() << " "  <<  ticket2.getIdusu() << " " << ticket2.getEstado() << endl;
 
             usu.setidTic(0,1);
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
@@ -279,12 +294,10 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
             break;
         case 3:
             cout << "\n\t Devolviste el libro con ID: " << ticket3.getCodigo();
-            time(&tiempodeDevolucion);
             ticket3.setEstado(0);
-            ticket3.setfechaDevolucion(tiempodeDevolucion);
-
-            ticket3.setEstado(0);
-            ticket3.setfechaDevolucion(tiempodeDevolucion);
+            ticket3.setDiat(fechdev.getDia());
+            ticket3.setMest(fechdev.getmes());
+            ticket3.setAniot(fechdev.getAnio());
 
             // Escribir cambio en ticket.txt (formato espacio-separado, sin seekp en texto)
             // Nota: Marcar como devuelto agregando nueva línea (mejor que tratar de actualizar línea existente)
@@ -311,8 +324,8 @@ int GenerarTicketDevolucion(Usuario& usu, int id) {
                 usu.setEstatus(0); //bloquea al usuario
             }
 
-            TickeDev << ticket3.getCodigo() << " " << ticket3.getNombre() << " " << ticket3.getfechaPrestamo() << " "
-                     << ticket3.getId() << " " << ticket3.getfechaDevolucion() << " " << ticket3.getIdusu() << " " << ticket3.getEstado() << endl;
+             TickeDev << ticket2.getCodigo() << " " << ticket2.getNombre() << " " << ticket2.getDiat() << " " << ticket2.getmest() 
+            << " " << ticket2.getAniot() << " " << ticket2.getId() << " "  <<  ticket2.getIdusu() << " " << ticket2.getEstado() << endl;
 
             usu.setidTic(0,2);
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
