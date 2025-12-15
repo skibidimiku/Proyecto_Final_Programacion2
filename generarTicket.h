@@ -9,13 +9,15 @@
 #include "Usuario.h"
 #include "Ticket.h"
 #include "fecha.h"
+#include "multa.h"
 
 using namespace std;
 
 int GenerarTicketPrestamo(Usuario& usu, int id) {
-    int codigo, idtic, idusu, dia, mes, anio;
+    int codigo, idtic, idusu, dia, mes, anio, diasPermitidos;
     bool estado; // 1: activo 0: devuelto
     char nombre[30];
+    float precioDia;
 
     Ticket ticket;
     contenido* registro = nullptr;
@@ -135,8 +137,20 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
         
         usu.setcantPrestamos(usu.getcantPrestamos()+1);
         cout << "\n\t Este es tu prestamo numero: " << usu.getcantPrestamos() << endl;
+
+        Multa config;
+        config.cargar();
     
-        
+        if (registro->getCategoria() == 1) {           // Libro
+            diasPermitidos = config.getdiaL();
+            precioDia = config.getpreciL();
+        }else if (registro->getCategoria() == 2) {      // Revista
+            diasPermitidos = config.getdiaR();
+            precioDia = config.getpreciR();
+        }else {                    // Tesis
+            diasPermitidos = config.getdiaT();
+            precioDia = config.getpreciT();
+        }
 
         Fecha fecha;
         // fechaDevolucion inicial 0 (no devuelto aún)
@@ -171,7 +185,7 @@ int GenerarTicketPrestamo(Usuario& usu, int id) {
         cout << "\t Id del contenido: " << ticket.getCodigo() << "\n";
         cout << "\t Id del usuario: " << ticket.getIdusu() << "\n";
         fecha.mostrar();
-        registro->imprCond();
+        registro->imprCond(diasPermitidos, precioDia);
         cout << "\t ==========================\n";
 
     }else{

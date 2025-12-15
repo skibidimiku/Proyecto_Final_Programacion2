@@ -80,7 +80,6 @@ public:
      } */
 
     void imprimirTicket(int id) {
-        Ticket ticket;
         Usuario usu;
         int c=0;
         int codigo, idtic, idusu, dia, mes, anio;
@@ -116,7 +115,7 @@ public:
 
         ticketFile.seekg(0, ios::beg);
         while (ticketFile>> codigo >> nombreimp >> dia >> mes >> anio >> idtic >> idusu >> estado  && usu.getcantPrestamos() > c){
-            if (ticket.getIdusu() == id && ticket.getEstado() == 1){
+            if (usu.getidTic(c) == idtic){
                 c++;
                 cout << "\t ====== Ticket ======\n";
                 cout << "\t Id del ticket: " << idtic << "\n";
@@ -126,7 +125,7 @@ public:
                 Fecha fechpres(dia, mes, anio);
                 cout << "\t Fecha Prestamo:";
                 fechpres.mostrar();
-                cout << "\t Estado del ticket: " << (ticket.getEstado() ? "Activo" : "Devuelto") << "\n";
+                cout << "\t Estado del ticket: " << (estado ? "Activo" : "Devuelto") << "\n";
                 cout << "\t ==========================\n";
             }
         }

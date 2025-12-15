@@ -232,6 +232,24 @@ public:
         UsuArchivo.close();
         archivo.close();
     }
+    
+    void depositarDin(int id , float din){
+        Usuario usu;
+        fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
+        if (!UsuArchivo){
+            cout << "\n\t El archivo no se abrio correctamente.";
+            return;
+        }
+
+        UsuArchivo.seekg((id - 1) * sizeof(Usuario), ios::beg);
+        UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+        
+        usu.setDinero(din);
+        UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
+        UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+
+        UsuArchivo.close();
+    }
 
     bool operator ==(const char* cont) const {
         return strcmp(this->contrasena, cont) == 0;

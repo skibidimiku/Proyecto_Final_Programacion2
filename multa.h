@@ -11,8 +11,90 @@
 using namespace std;
 
 class Multa{
+private:
+    int diaL=14, diaR=7, diaT=30;
+    float preciL=20, preciR=10, preciT=50;
+
 public:
+
+    void setdiaL(int d){diaL=d;}
+    void setdiaR(int d){diaR=d;}
+    void setdiaT(int d){diaT=d;}
+    void setPreciL(float p){ preciL = p; }
+    void setPreciR(float p){ preciR = p; }
+    void setPreciT(float p){ preciT = p; }
+
+    int getdiaL(){ return diaL; }
+    int getdiaR(){ return diaR; }
+    int getdiaT(){ return diaT; }
+    int getpreciL(){ return preciL; }
+    int getpreciR(){ return preciR; }
+    int getpreciT(){ return preciT; }
+
+    int modificarcondi(int mod){
+    Multa config;
+    config.cargar();
+
+    char resp;
+    int dias = 0;
+    float precio = 0;
+
+    cout << "\n\t ¿Modificar dias? (s/n): ";
+    cin >> resp;
+    if(resp=='s' || resp=='S'){
+        while(dias <= 0){
+            cout << "\n\t Nuevos dias: ";
+            cin>>dias;
+        }
+    }
+
+    cout << "\n\t ¿Modificar precio? (s/n): ";
+    cin >> resp;
+    if(resp=='s' || resp=='S'){
+        while(precio <= 0){
+            cout << "\n\t Nuevo precio: ";
+            cin >> precio;
+        }
+    }
+
+    if(mod == 1){
+        if(dias)   config.setdiaL(dias);
+        if(precio) config.setPreciL(precio);
+    }
+    else if(mod == 2){
+        if(dias)   config.setdiaR(dias);
+        if(precio) config.setPreciR(precio);
+    }
+    else if(mod == 3){
+        if(dias)   config.setdiaT(dias);
+        if(precio) config.setPreciT(precio);
+    }
+
+    config.guardar();
+    return 0;
+}
+
+    void guardar() {
+        fstream f("multa.dat", ios::binary | ios::out);
+        f.write(reinterpret_cast<char*>(this), sizeof(Multa));
+        f.close();
+    }
+
+    void cargar() {
+        fstream f("multa.dat", ios::binary | ios::in);
+        if (f) {
+            f.read(reinterpret_cast<char*>(this), sizeof(Multa));
+            f.close();
+        } else {
+            // Si no existe, se crea con valores por defecto
+            guardar();
+        }
+    }
+
+
     float getMulta(int id, int idtic){
+        Multa config;
+        config.cargar();   // lee multa.dat
         contenido* libro;
         Ticket ticket;
         Usuario usu;
@@ -104,16 +186,28 @@ public:
     
         libro = tmp2;
 
+        int diasPermitidos;
+        float precioDia;
+
+        if (cat == 1) {           // Libro
+            diasPermitidos = config.getdiaL();
+            precioDia = config.getpreciL();
+        }else if (cat == 2) {      // Revista
+            diasPermitidos = config.getdiaR();
+            precioDia = config.getpreciR();
+        }else {                    // Tesis
+            diasPermitidos = config.getdiaT();
+            precioDia = config.getpreciT();
+        }
+        
         // Calcular diferencia de días entre fecha de préstamo y ahora (fecha de devolución)
         Fecha fechdev;
         Fecha fechpres(ticket.getDiat(), ticket.getmest(), ticket.getAniot());
 
-        int dias = fechpres.diasEntre(fechdev);
+        int dias = fechdev.diasEntre(fechpres);
 
-        if (dias > 0){
-            // Delegar el cálculo de la multa a la implementación concreta
-            multa = libro->calcMulta(dias);
-        }
+        // Delegar el cálculo de la multa a la implementación concreta
+        multa = libro->calcMulta(dias, diasPermitidos, precioDia);
 
         if(multa>0.0){
             usu.setEstatus(0); //bloquea al usuario
@@ -266,15 +360,28 @@ public:
     
                 registro = tmp2;
                 
+                Multa config;
+                config.cargar();
+
                 Fecha fechdev;
                 Fecha fechpres(dia, mes, anio);
+                int dias = fechdev.diasEntre(fechpres);
 
-                int dias = fechpres.diasEntre(fechdev);
+                int diasPermitidos;
+                float precioDia;
 
-                if (dias > 0){
-                    // Delegar el cálculo de la multa a la implementación concreta
-                    multa = registro->calcMulta(dias);
+                if (cat == 1){
+                    diasPermitidos = config.getdiaL();
+                    precioDia = config.getpreciL();
+                }else if (cat == 2){
+                    diasPermitidos = config.getdiaR();
+                    precioDia = config.getpreciR();
+                }else{
+                    diasPermitidos = config.getdiaT();
+                    precioDia = config.getpreciT();
                 }
+
+                multa = registro->calcMulta(dias, diasPermitidos, precioDia);
                 
                 if (multa>0.0){
                     usu.setEstatus(0);

@@ -5,6 +5,7 @@
 #include <fstream>
 using namespace std;
 #include "Libro.h"
+#include "multa.h"
 #include "Usuario.h"
 #include "Ticket.h"
 
@@ -65,8 +66,21 @@ int creaCascaron(){
         return -1;
     }
 
+    Multa mul;
+
+    mul.setdiaL(14);
+    mul.setdiaR(7);
+    mul.setdiaT(30);
+    mul.setPreciL(20.0);
+    mul.setPreciR(10.0);
+    mul.setPreciT(50.0);
+
+    mul.guardar();
+
+
     delete blanco;
-    ticketFile.close();                                          
+    TicketDev.close();
+    ticketFile.close();
     archivo.close();
     UsuArchivo.close();
     

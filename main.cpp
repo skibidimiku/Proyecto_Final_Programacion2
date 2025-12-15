@@ -90,7 +90,7 @@ int main(){
 }
 
 void menu_Administrador(int id){
-    int selec, otrid;
+    int selec, otrid, cua;
     vector<int> ids;
     Usuario Usua;
     Multa multaObj;
@@ -141,7 +141,17 @@ void menu_Administrador(int id){
             case 7: corte();
             break;
 
-            case 8:;
+            case 8: 
+            cout << "\n\t 1) Libro \t 2) Resista \t 3)Tesis";
+            cout << "\n\t Dame la que quieras modificar: ";
+            cua = esnum();
+            while (cua < 1 && cua > 3){
+                cout << "\n\t Dame la que quieras modificar: ";
+                cua = esnum();
+            }
+            
+
+            multaObj.modificarcondi(cua);
             break;
 
             case 9: usuariosMorosos();
@@ -168,6 +178,7 @@ void menu_Usuario(int id){
     int selec;
     Usuario Usua;
     Multa multaObj;
+    float din;
 
     if (multaObj.getSiMulta(id)){
         cout << "\n\t Tienes una multa pendiente, no puedes realizar prestamos hasta pagarla y devolver el libro si no lo devolviste." << endl;
@@ -183,8 +194,9 @@ void menu_Usuario(int id){
         cout << "\n\t [4] Mostrar mis datos";
         cout << "\t [5] Pagar multa";
         cout << "\t [6] Explorar mis tickets";
-        cout << "\n\t [7] Mostrar menu de ayuda.";
-        cout << "\n\t [0] Salir";
+        cout << "\n\t [7] Depositar dinero.";
+        cout << "\t [8] Mostrar menu de ayuda.";
+        cout << "\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
         selec = esnum();
 
@@ -211,6 +223,16 @@ void menu_Usuario(int id){
             break;
 
             case 7: 
+                cout << "\n\t Dame la cantidad a depositar: ";
+                cin >> ws;
+                cin >> din;
+                while (din < 1){
+                    cout << "\n\t Dame la cantidad a depositar: ";
+                    cin >> din;
+                }
+                Usua.depositarDin(id, din);
+
+            case 8: 
                 mostrar_Ayuda_Usuario();
             break;
 
