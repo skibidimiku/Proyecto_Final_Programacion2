@@ -12,47 +12,47 @@ int SetLibro() {
         return 1;
     }
 
-    Libro registro;
+    contenido* registro=new Libro();
     int selec;
 
     do {   //aqui va a tomar todos los datos del usuario, los guarda con los SET
         int id;
         cout << "\n\n\t Ingresa el ID del libro [1-10]: ";
         cin >> id;
-        registro.setID(id);
+        registro->setID(id);
 
         char titulo[30];
         cout << "\n\t Ingresa el TITULO del LIBRO: ";
         cin.ignore();
         cin.getline(titulo, 30);
-        registro.setTitulo(titulo );
+        registro->setTitulo(titulo );
 
         int cat;
         cout << "\n\t Ingresa la CATEGORIA del LIBRO: ";
         cin >> cat;
-        registro.setCategoria(cat);
+        registro->setCategoria(cat);
 
 
         char aut[30];
         cout << "\n\t Ingresa el AUTOR del LIBRO: ";
         cin.ignore();
         cin.getline(aut, 30);
-        registro.setAutor(aut);
+        registro->setAutor(aut);
 
 
         int existencia; 
         cout << "\n\t Ingresa los EJEMPLARES TOTALES: ";
         cin >> existencia;
-        registro.setEjemeplaresTotales(existencia);
-        registro.setEjemplaresDisponibles(existencia);
+        registro->setEjemeplaresTotales(existencia);
+        registro->setEjemplaresDisponibles(existencia);
         
         //mueve el cursor de "POINTER" para saber en donde va a hacer cambios en el archivo 
         //esto lo hace usando le posicion de nuestra "ID"
         //EJ: ID: 6 -> "voy a buscar en la posicion 6 del archivo".
-        archivo.seekp((registro.getID() - 1) * sizeof(Libro), ios::beg);
+        archivo.seekp((registro->getID() - 1) * sizeof(Libro), ios::beg);
         //ya tiene la posicion correcta, entonces traduce los datos a su estado original de esa posicion
         //EJ: "voy a escribir en la posicion del archivo que estoy posicionado."
-        archivo.write(reinterpret_cast<char*>(&registro), sizeof(Libro));
+        archivo.write(reinterpret_cast<char*>(registro), sizeof(Libro));
         cout << "\n\t -> Datos grabados <-\n";
         do {
             cout << "\n--------------------------------------";
@@ -67,6 +67,7 @@ int SetLibro() {
 
     } while (true);
 
+    delete registro;
     archivo.close();
     return 0;
 }

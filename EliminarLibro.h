@@ -39,7 +39,7 @@ int EliminarLibro(){
         }
     }while(id < 1 || id > 10);
 
-    while(id > 0 || id <= 10){
+    while(id > 0 && id <= 10){
         baja = false;
         archivo.seekg((id-1) * sizeof(Libro));
         archivo.read((char*)&registro, sizeof(Libro));

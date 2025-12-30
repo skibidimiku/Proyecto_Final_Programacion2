@@ -29,7 +29,8 @@ int creaCascaron(){
     Blancousu.setCorreo("");
     Blancousu.setMatricula(0);
     Blancousu.setNombre("");
-    Blancousu.setMulta(0);
+    Blancousu.setMulta(0.0);
+    Blancousu.setDinero(0.0);
     Blancousu.setcantPrestamos(0);
     Blancousu.setPermisos(0);
     Blancousu.setTelefono("");
@@ -47,7 +48,8 @@ int creaCascaron(){
     }
     
     ticketFile.clear();
-
+    
+    delete blanco;
     ticketFile.close();                                          
     archivo.close();
     UsuArchivo.close();

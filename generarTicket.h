@@ -1,14 +1,24 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <string>
 #include "Libro.h"
 #include "Usuario.h"
 #include "Ticket.h"
 
 using namespace std;
 
-int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
-    Ticket ticket, ticketCont;
+int GenerarTicketPrestamo(Usuario& usu, int id) {
+    time_t tiempodeprestamo;
+    time_t tiempodeDevolucion;
+    int codigo;
+    bool estado; // 1: activo 0: devuelto
+    int idtic;
+    int idusu;
+    char nombre[30];
+
+    Ticket ticket;
+    contenido* registro = nullptr;
     int idl, cont=0;
     char resp;
 
@@ -36,35 +46,58 @@ int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
         }
     } while (idl < 1 || idl > 10);
 
+    // Leer el registro físico desde el archivo en un objeto temporal (Libro tiene la estructura de almacenamiento)
+    Libro tmp;
     archivo.seekg((idl - 1) * sizeof(Libro), ios::beg);
-    archivo.read(reinterpret_cast<char*>(&registro), sizeof(Libro));
-    if (registro.getID() == 0) {
-        cout << "\n\t Aun no hay datos registrados para el ID " << id << ".";
-        archivo.close();
-        return 1;
-    }
+    archivo.read(reinterpret_cast<char*>(&tmp), sizeof(Libro));
+    
+    int cat = tmp.getCategoria();
+    contenido* tmp2 = nullptr;
+    if (cat==1) tmp2 = new Libro();
+    else if (cat==2) tmp2 = new Revista();
+    else tmp2 = new Tesis();
+    
+    // Copiar datos del tmp al objeto polimórfico
+    tmp2->setID(tmp.getID());
+    tmp2->setTitulo(tmp.getTitulo());
+    tmp2->setCategoria(tmp.getCategoria());
+    tmp2->setAutor(tmp.getAutor());
+    tmp2->setEjemeplaresTotales(tmp.getEjemplaresTotales());
+    tmp2->setEjemplaresDisponibles(tmp.getEjemplaresDisponibles());
+    
+    registro = tmp2;
 
     // Verificar si hay suficiente existencia
-    if (registro.getEjemplaresDisponibles() < 1) {
+    if (registro->getEjemplaresDisponibles() < 1) {
         cout << "\n\t No hay libros disponibles.";
+        delete registro;
         archivo.close();
         return 1;
     }
 
-    // Actualizar el ticket
-    ticket.setCodigo(registro.getID());
+    // Actualizar el ticket (codigo de contenido)
+    ticket.setCodigo(registro->getID());
 
-    // Restar la cantidad vendida de la existencia
-    registro.setEjemplaresDisponibles(registro.getEjemplaresDisponibles() - 1);
+    // Restar la cantidad prestada de la existencia y escribir de vuelta
+    registro->setEjemplaresDisponibles(registro->getEjemplaresDisponibles() - 1);
+    
+    // Copiar el valor actualizado de vuelta a tmp
+    tmp.setEjemplaresDisponibles(registro->getEjemplaresDisponibles());
+    
+    archivo.seekp((idl - 1) * sizeof(Libro), ios::beg);
+    archivo.write(reinterpret_cast<const char*>(&tmp), sizeof(Libro));
+    if (!archivo) {
+        cout << "\n\t Error al actualizar la existencia del libro";
+        delete registro;
+        archivo.close();
+        return 1;
+    }
 
     fstream ticketFile("ticket.txt", ios::in | ios::app | ios::out);
     if (!ticketFile) {
-        if (!ticketFile) {
-            cout << "\n\t No se pudo crear/abrir ticket.dat";
-            ticketFile.close();
-            archivo.close();
-            return 1;
-        }
+        cout << "\n\t No se pudo crear/abrir ticket.txt";
+        archivo.close();
+        return 1;
     }
 
     fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
@@ -79,7 +112,7 @@ int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
     UsuArchivo.seekg((id - 1) * sizeof(Usuario), ios::beg);
     UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
 
-    if (usu.getEstatus()==1){
+    if (usu.getEstatus()==0){
         cout << "\n\t El usuario esta bloqueado por una multa. No puede realizar prestamos.";
         archivo.close();
         UsuArchivo.close();
@@ -91,7 +124,7 @@ int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
     if (usu.getcantPrestamos() < 3){
 
         archivo.seekp((idl - 1) * sizeof(Libro), ios::beg);
-        archivo.write(reinterpret_cast<const char*>(&registro), sizeof(Libro));
+        archivo.write(reinterpret_cast<const char*>(&tmp), sizeof(Libro));
     
         if (!archivo) {
             cout << "\n\t Error al actualizar la existencia del libro";
@@ -109,23 +142,28 @@ int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
 
         time_t tiempoPres;
         time(&tiempoPres);
-        time_t tiempoDev;
-        time(&tiempoDev);
+        // fechaDevolucion inicial 0 (no devuelto aún)
+        time_t tiempoDev = 0;
         ticket.setfechaPrestamo(tiempoPres);
-        while(ticketFile>>ticketCont){
+        while(ticketFile>> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado){
             //busca el ultimo ticket para asignar el siguiente codigo
             cont++;
         }
         ticket.setId(cont+1);
         ticket.setEstado(1);
         ticket.setIdusu(usu.getMatricula());
-        ticket.setTotal(0);
         ticket.setNombre(usu.getNombre());
-        ticket.setCodigo(registro.getID());
+        // Guardar el codigo tal cual corresponde al ID del libro (1-based)
+        ticket.setCodigo(registro->getID());
         ticket.setfechaDevolucion(tiempoDev);
 
-        ticketFile << " " << ticket.getCodigo() << " " << ticket.getNombre() << " " << ticket.getfechaPrestamo() << " " << ticket.getId() << " " << ticket.getTotal() << " " << ticket.getfechaDevolucion() << ticket.getIdusu() << ticket.getEstado() <<endl;
+        // Escribir en formato espacio-separado: codigo nombre fechaPrestamo id fechaDevolucion idusu estado
+        ticketFile.clear();
+        ticketFile.seekp(0, ios::end);
+        ticketFile << " " << ticket.getCodigo() << " " << ticket.getNombre() << " " << ticket.getfechaPrestamo() << " " 
+                   << ticket.getId() << " " << ticket.getfechaDevolucion() << " " << ticket.getIdusu() << " " << ticket.getEstado() << endl;
 
+        
         time_t fec= ticket.getfechaPrestamo();
         char* fecha= ctime(&fec);
         cout << "\t ====== Ticket De Prestamo ======\n";
@@ -133,17 +171,20 @@ int GenerarTicketVenta(Libro& registro, Usuario& usu, int id) {
         cout << "\t Nombre del usuario: " << ticket.getNombre() << "\n";
         cout << "\t Id del contenido: " << ticket.getCodigo() << "\n";
         cout << "\t Id del usuario: " << ticket.getIdusu() << "\n";
-        cout << "\t Fecha Prestamo:"<< fecha << "\n";
+        cout << "\t Fecha Prestamo:"<< fecha;
+        registro->imprCond();
         cout << "\t ==========================\n";
 
     }else{
         cout << "\n\t El usuario exede la cantidad de prestamos.";
+        delete registro;
         archivo.close();
         UsuArchivo.close();
         ticketFile.close();
         return 1;
     }
     
+    delete registro;
     archivo.close();
     UsuArchivo.close();
     ticketFile.close();

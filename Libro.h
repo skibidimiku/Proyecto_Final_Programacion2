@@ -37,7 +37,9 @@ class contenido{
     virtual void setEjemplaresDisponibles(int cant)=0;
     virtual int getEjemplaresDisponibles()=0;
 
+    virtual void imprCond()=0;
     virtual float calcMulta(int dias)=0;
+    virtual ~contenido() {}
 };
 
 class Libro : public contenido {
@@ -58,6 +60,10 @@ class Libro : public contenido {
     void setEjemplaresDisponibles(int cant) override { EjemplaresDisponibles=cant; }
     int getEjemplaresDisponibles() override { return EjemplaresDisponibles; }
 
+    void imprCond() override {
+        cout << "\n\t El contenido prestado es un LIBRO, si pasan 14 dias despues \n\t del prestamo se te cobrara $20 por dia" << endl;
+    }
+    
     float calcMulta(int dias) override {
         if (dias > 14) {
             return (dias - 14) * 20.0; // Multa de $20 por día extra
@@ -84,6 +90,10 @@ class Revista : public contenido {
 
     void setEjemplaresDisponibles(int cant) override { EjemplaresDisponibles=cant; }
     int getEjemplaresDisponibles() override { return EjemplaresDisponibles; }
+
+    void imprCond() override {
+        cout << "\n\t El contenido prestado es una REVISTA, si pasan 7 dias despues \n\t del prestamo se te cobrara $10 por dia" << endl;
+    }
 
     float calcMulta(int dias) override {
         if (dias > 7) {
@@ -113,6 +123,10 @@ class Tesis : public contenido {
     void setEjemplaresDisponibles(int cant) override { EjemplaresDisponibles=cant; }
     int getEjemplaresDisponibles() override { return EjemplaresDisponibles; }
 
+    void imprCond() override {
+        cout << "\n\t El contenido prestado es una TESIS, si pasan 30 dias despues \n\t del prestamo se te cobrara $50 por dia" << endl;
+    }
+    
     float calcMulta(int dias) override {
         if (dias > 30) {
             return (dias - 30) * 50.0; // Multa de $50 por día extra

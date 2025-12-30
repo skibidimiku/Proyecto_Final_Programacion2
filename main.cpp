@@ -4,9 +4,11 @@
 #include "Usuario.h"
 #include "CrearCascaron.h"
 #include "SetUsuario.h"
+#include "ticketDevolucion.h"
 #include "SetLibro.h"
 #include "DemostrarLibro.h"
 #include "Libro.h"
+#include "multa.h"
 #include "ModificarLibro.h"
 #include "EliminarLibro.h"
 #include "generarTicket.h"
@@ -84,39 +86,36 @@ void menu_Administrador(int id){
     do{
         cout << "\n---------------------------------------------------------";
         cout << "\n\t ---> Menu De Administrador <---";
-        cout << "\n\t [1] Crear cascaron.";
-        cout << "\n\t [2] Ingresar nuevo producto";
-        cout << "\n\t [3] Mostrar productos";
-        cout << "\n\t [4] Modificar algun producto";
-        cout << "\n\t [5] Eliminar algun producto";
-        cout << "\n\t [6] Registrar venta (Generar ticket)";
-        cout << "\n\t [7] Mostrar Total Ventas (Tickets)";
-        cout << "\n\t [8] Mostrar menu de ayuda.";
+        cout << "\n\t [1] Ingresar nuevo producto";
+        cout << "\n\t [2] Mostrar productos";
+        cout << "\n\t [3] Modificar algun producto";
+        cout << "\n\t [4] Eliminar algun producto";
+        cout << "\n\t [5] Registrar usuario";
+        cout << "\n\t [6] ";
+        cout << "\n\t [7] Mostrar menu de ayuda.";
         cout << "\n\t [0] Salir";
         cout << "\n\n\t Elige una opcion: ";
         cin >> selec;
 
         switch(selec){
-            case 1: creaCascaron();
+            case 1: SetLibro();
             break;
             
-            case 2: SetLibro();
+            case 2: DemonstrarLibro();
             break;
             
-            case 3: DemonstrarLibro();
+            case 3: ModificarLibro();
             break;   
             
-            case 4: ModificarLibro();
+            case 4: EliminarLibro();
             break;     
             
-            case 5: EliminarLibro();
-            break;
-            
-            case 6: {
-                Libro libro; 
-                GenerarTicketVenta(libro, Usua, id); 
+            case 5:
+                SetUsuario();
                 break;
-            }
+            
+            case 6: 
+            break;
 
             case 7: 
                 //MostrarTotalVentas();
@@ -134,5 +133,59 @@ void menu_Administrador(int id){
 }
 
 void menu_Usuario(int id){
+    int selec;
+    Usuario Usua;
+    Multa multaObj;
+
+    if (multaObj.getSiMulta(id)){
+        cout << "\n\t Tienes una multa pendiente, no puedes realizar prestamos hasta pagarla." << endl;
+    }
     
+    
+    do{
+        cout << "\n---------------------------------------------------------";
+        cout << "\n\t ---> Menu De Usuario <---";
+        cout << "\n\t [1] Mostrar productos";
+        cout << "\n\t [2] Pedir prestamo de libro";
+        cout << "\n\t [3] Devolver libro";
+        cout << "\n\t [4] Mostrar mis datos";
+        cout << "\n\t [5] Pagar multa";
+        cout << "\n\t [6] Explorar mis tickets";
+        cout << "\n\t [7] Mostrar menu de ayuda.";
+        cout << "\n\t [0] Salir";
+        cout << "\n\n\t Elige una opcion: ";
+        cin >> selec;
+
+        switch(selec){
+            case 1: DemonstrarLibro();
+            break;
+            
+            case 2: GenerarTicketPrestamo(Usua, id);
+            break;
+            
+            case 3: GenerarTicketDevolucion(Usua, id);
+            break;   
+            
+            case 4: Usua.printUsuario(id);
+            break;     
+            
+            case 5: multaObj.pagarMulta(id);
+                break;
+            
+            
+            case 6: 
+                Ticket ti;
+                ti.imprimirTicket(id);
+            break;
+
+            case 7: 
+                //MostrarTotalVentas();
+            break;
+
+            case 0: cout << "\n\t Saliendo del programa...\n";
+                break;
+            default: cout << "\n\t Opcion invalida.\n";
+                break;
+        }
+    }while(selec != 0);
 }

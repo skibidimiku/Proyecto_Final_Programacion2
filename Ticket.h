@@ -2,6 +2,7 @@
 #include <string>
 #include <ctime>
 #include <fstream>
+#include "Usuario.h"
 
 using namespace std;
 
@@ -18,12 +19,9 @@ bool estado; // 1: activo 0: devuelto
 int id;
 int idusu;
 char nombre[30];
-float total;
+
 
 public:
-    Ticket() : codigo(0), total(0.0) {}
-    Ticket(int c, float tot) : codigo(c), total(tot) {}
-    Ticket(const Ticket& otro) : codigo(otro.codigo), total(otro.total) {}
 
     //setters y getters
     void setCodigo(int c) { codigo = c; }
@@ -36,16 +34,97 @@ public:
     int getIdusu(){ return idusu; }
     void setNombre(const char* nom) { strncpy(nombre, nom, 30); nombre[29] = '\0'; }
     const char* getNombre() const { return nombre; }
-    void setTotal(float total) { this->total = total; }
-    float getTotal() const { return total; }
     void setfechaPrestamo(time_t fechaAct){ tiempodeprestamo=fechaAct; }
     time_t getfechaPrestamo(){ return tiempodeprestamo; }
     void setfechaDevolucion(time_t fechaAct){ tiempodeDevolucion=fechaAct; }
     time_t getfechaDevolucion(){ return tiempodeDevolucion; }
 
-    friend istream& operator>>(istream& is, Ticket& t) {
-        is >> t.codigo >> t.nombre >> t.tiempodeprestamo >> t.id >> t.total >> t.tiempodeDevolucion >> t.idusu >> t.estado;
+    /* friend istream& operator>>(istream& is, Ticket& t) {
+        string line;
+        if (!std::getline(is, line)) return is;
+        if(!line.empty() && line.back() == '\r') line.pop_back();
+
+        // Expect CSV: codigo|nombre|fechaPrestamo|id|fechaDevolucion|idusu|estado
+        size_t p1 = line.find('|');
+        size_t p2 = (p1==string::npos) ? string::npos : line.find('|', p1+1);
+        size_t p3 = (p2==string::npos) ? string::npos : line.find('|', p2+1);
+        size_t p4 = (p3==string::npos) ? string::npos : line.find('|', p3+1);
+        size_t p5 = (p4==string::npos) ? string::npos : line.find('|', p4+1);
+        size_t p6 = (p5==string::npos) ? string::npos : line.find('|', p5+1);
+
+        if (p1==string::npos || p2==string::npos || p3==string::npos || p4==string::npos || p5==string::npos || p6==string::npos) {
+            is.setstate(std::ios::failbit);
+            return is;
+        }
+
+        try {
+            t.codigo = stoi(line.substr(0, p1));
+            string name = line.substr(p1+1, p2-p1-1);
+            strncpy(t.nombre, name.c_str(), 29);
+            t.nombre[29] = '\0';
+            t.tiempodeprestamo = (time_t)stoll(line.substr(p2+1, p3-p2-1));
+            t.id = stoi(line.substr(p3+1, p4-p3-1));
+            t.tiempodeDevolucion = (time_t)stoll(line.substr(p4+1, p5-p4-1));
+            t.idusu = stoi(line.substr(p5+1, p6-p5-1));
+            t.estado = (line.substr(p6+1) == "1");
+        } catch(...) {
+            is.setstate(std::ios::failbit);
+        }
         return is;
+     } */
+
+    void imprimirTicket(int id) {
+        Ticket ticket;
+        Usuario usu;
+        int c=0;
+        int codigo, idtic, idusu, estado;
+        char nombre[30];
+        time_t tiempodeprestamo, tiempodeDevolucion;
+        time_t tiempoprestamo;    
+        fstream ticketFile("ticket.txt", ios::in | ios::app | ios::out);
+        if (!ticketFile) {
+            cout << "\n\t No se pudo crear/abrir ticket.dat";
+            ticketFile.close();
+            return;
+        }
+
+        fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
+        if(!UsuArchivo){
+            cout << "\n\t El archivo no se abrio correctamente.";
+            ticketFile.close();
+            UsuArchivo.close();
+            return;
+        }
+
+        UsuArchivo.seekg((id - 1) * sizeof(Usuario), ios::beg);
+        UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+
+        if (usu.getcantPrestamos() == 0){
+            cout << "\n\t El usuario no tiene prestamos activos.";
+            ticketFile.close();
+            UsuArchivo.close();
+            return;
+        }
+        
+
+        ticketFile.seekg(0, ios::beg);
+        while (ticketFile>> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado  && usu.getcantPrestamos() > c){
+            if (ticket.getIdusu() == id && ticket.getEstado() == 1){
+                c++;
+                cout << "\t ====== Ticket ======\n";
+                cout << "\t Id del ticket: " << id << "\n";
+                cout << "\t Nombre del usuario: " << ticket.getNombre() << "\n";
+                cout << "\t Id del contenido: " << ticket.getCodigo() << "\n";
+                cout << "\t Id del usuario: " << ticket.getIdusu() << "\n";
+                tiempoprestamo = ticket.getfechaPrestamo();
+                char* fechaPres= ctime(&tiempoprestamo);
+                cout << "\t Fecha Prestamo:"<< fechaPres << "\n";
+                cout << "\t Estado del ticket: " << (ticket.getEstado() ? "Activo" : "Devuelto") << "\n";
+                cout << "\t ==========================\n";
+            }
+        }
+
+        
     }
 
     bool operator==(const Ticket& other) const {
@@ -53,8 +132,8 @@ public:
                id == other.id &&
                strcmp(nombre, other.nombre) == 0 &&
                tiempodeprestamo == other.tiempodeprestamo &&
-               tiempodeDevolucion == other.tiempodeDevolucion &&
-               total == other.total;
+               tiempodeDevolucion == other.tiempodeDevolucion && 
+               idusu == other.idusu && estado == other.estado;
     }
  /*   void mostrarTicket() {
         cout << "Codigo de producto: " << codigo << endl;

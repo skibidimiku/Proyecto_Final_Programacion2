@@ -15,6 +15,7 @@ protected:
     char carrera[30];
     char correo[50];
     char telefono[30];
+    float dinero=0.0;
 public:
 
     void setNombre(const char* nom) { strncpy(nombre, nom, 30); nombre[29] = '\0'; }
@@ -26,8 +27,11 @@ public:
     void setCorreo(const char* corr) { strncpy(correo, corr, 50); correo[49] = '\0'; }
     const char* getCorreo() const { return correo; }
 
-    void setTelefono(const char* tel) { strncpy(telefono, tel, 30); carrera[29] = '\0'; }
+    void setTelefono(const char* tel) { strncpy(telefono, tel, 30); telefono[29] = '\0'; }
     const char* getTelefono() const { return telefono; }
+
+    void setDinero(float din){ dinero+=din; }
+    float getDinero(){ return dinero; }
 };
 
 
@@ -37,7 +41,7 @@ private:
 int matricula;
 char contrasena[30]; // solo aplica a administradores
 int cantPres=0;
-bool multa;
+float multa=0.0;
 int Estatus; // 1=Activo  0=Bloqueado 
 int permisos; // 1=Administrador  0=Usuario
 
@@ -60,8 +64,8 @@ public:
     void setContrasena(const char* con){ strncpy(contrasena, con, 30); contrasena[29] = '\0'; }
     const char* getContrasena() const{ return contrasena; }
 
-    void setMulta(bool mul){ multa=mul; }
-    bool getMulta(){ return multa; }
+    void setMulta(float mul){ multa=multa+mul; }
+    float getMulta(){ return multa; }
 
     int iniciarSecion(int id){
         fstream Archivo("Usuarios.dat", ios::binary | ios::in | ios::out);
@@ -74,22 +78,21 @@ public:
         }
 
         while(Archivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario))){
-            if (usu.matricula == id){
-                if (usu.permisos == 1){
+            if (usu.matricula == id && usu.nombre[0] != '\0'){
+                cout << "\n\tDame la contrasena: ";
+                cin.ignore();
+                cin.getline(contra, 30);
+                while (!(usu==contra) && intentos < 3){
+                    cout << "\n\tLa contrasena es in correcta te quedan [" << 3 - intentos << "] intentos.";
                     cout << "\n\tDame la contrasena: ";
-                    cin.ignore();
                     cin.getline(contra, 30);
-                    while (!(usu==contra) && intentos < 3){
-                        cout << "\n\tLa contrasena es in correcta te quedan [" << 3 - intentos << "] intentos.";
-                        cout << "\n\tDame la contrasena: ";
-                        cin.getline(contra, 30);
-                        intentos++;
-                    }
+                    intentos++;
+                }
 
-                    if (usu==contra){
-                        return 1;
-                    }
-                }else{
+                if (usu==contra && usu.permisos==1){
+                    return 1;
+                }
+                else if (usu==contra && usu.permisos==0){
                     return 0;
                 }
             }
@@ -106,16 +109,45 @@ public:
 
     void printUsuario(int id){
         fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
-        UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
         Usuario usu;
-        UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
-        cout << "\n\t El Nombre es: " << nombre;
-        cout << "\n\t Su carrera es es: " << nombre;
+        UsuArchivo.seekg((id - 1) * sizeof(Usuario), ios::beg);
+        UsuArchivo.read(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+        cout << "\n------------------------------------------";
+        cout << "\n\t El Nombre es: " << usu.getNombre();
+        cout << "\n\t Su carrera es es: " << usu.getNCarrera();
+        cout << "\n\t Su correo es: " << usu.getCorreo();
+        cout << "\n\t Su telefono es: " << usu.getTelefono();
+        if (usu.getEstatus() == 0) {
+            cout << "\n\t El usuario esta bloqueado por una multa.";
+            cout << "\n\t Debe una multa de: $" << usu.getMulta();
+        } else {
+            cout << "\n\t El usuario esta activo.";
+        }
+        cout << "\n\t Tiene: $" << usu.getDinero() << " disponible." << endl;
+        cout << "\n\t Tiene: " << usu.getcantPrestamos() << " prestamos activos." << endl;
 
     }
 
+    void BajaUsuario(int id){
+        fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
+        UsuArchivo.seekp((id - 1) * sizeof(Usuario), ios::beg);
+        Usuario usu;
+        usu.setMatricula(0);
+        usu.setNombre("");
+        usu.setCarrera("");
+        usu.setCorreo("");
+        usu.setTelefono("");
+        usu.setContrasena("");
+        usu.setEstatus(1);
+        usu.setPermisos(0);
+        usu.setDinero(0.0);
+        usu.setMulta(0.0);
+        usu.setcantPrestamos(0);
+        UsuArchivo.write(reinterpret_cast<char*>(&usu), sizeof(Usuario));
+    }
+
     bool operator==(const string cont) const {
-        return this->contrasena == cont;
+        return strcmp(this->contrasena, cont.c_str()) == 0;
     }
 
     void operator +=(int cant){

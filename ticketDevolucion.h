@@ -1,6 +1,10 @@
+#ifndef TICKETDEVOLUCION_DEFINED
+#define TICKETDEVOLUCION_DEFINED
+
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <string>
 #include "Libro.h"
 #include "Usuario.h"
 #include "multa.h"
@@ -8,11 +12,16 @@
 
 using namespace std;
 
-int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
+int GenerarTicketDevolucion(Usuario& usu, int id) {
     time_t tiempodeprestamo;
     time_t tiempodeDevolucion;
-    multa multaObj;
-    Ticket ticket;
+    int codigo;
+    bool estado; // 1: activo 0: devuelto
+    int idtic;
+    int idusu;
+    char nombre[30];
+    Multa multaObj;
+    
     Ticket ticket1;
     Ticket ticket2;
     Ticket ticket3;
@@ -27,14 +36,12 @@ int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
         return 1;
     }
 
-    fstream ticketFile("ticket.txt", ios::in | ios::app | ios::out);
+    fstream ticketFile("ticket.txt",  ios::in | ios::out);
     if (!ticketFile) {
-        if (!ticketFile) {
-            cout << "\n\t No se pudo crear/abrir ticket.dat";
-            ticketFile.close();
-            archivo.close();
-            return 1;
-        }
+        cout << "\n\t No se pudo crear/abrir ticket.dat";
+        ticketFile.close();
+        archivo.close();
+        return 1;
     }
 
     fstream UsuArchivo("Usuarios.dat", ios::binary | ios::in | ios::out);
@@ -57,150 +64,161 @@ int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
         return 1;
     }
 
-    while(ticketFile >> ticket && usu.getcantPrestamos() > cantTic){
-        if(id==ticket.getId() && ticket.getEstado()==1){
-            if (cantTic==0){
-                ticket1.setfechaPrestamo(ticket.getfechaPrestamo());
-                ticket1.setId(ticket.getId());
-                ticket1.setTotal(ticket.getTotal());
-                ticket1.setNombre(ticket.getNombre());
-                ticket1.setCodigo(ticket.getCodigo());
-                ticket1.setfechaDevolucion(ticket.getfechaDevolucion());
-                cantTic++;
-            }if (cantTic==1){
-                ticket2.setfechaPrestamo(ticket.getfechaPrestamo());
-                ticket2.setId(ticket.getId());
-                ticket2.setTotal(ticket.getTotal());
-                ticket2.setNombre(ticket.getNombre());
-                ticket2.setCodigo(ticket.getCodigo());
-                ticket2.setfechaDevolucion(ticket.getfechaDevolucion());
-                cantTic++;
-            }if (cantTic==2){
-                ticket3.setfechaPrestamo(ticket.getfechaPrestamo());
-                ticket3.setId(ticket.getId());
-                ticket3.setTotal(ticket.getTotal());
-                ticket3.setNombre(ticket.getNombre());
-                ticket3.setCodigo(ticket.getCodigo());
-                ticket3.setfechaDevolucion(ticket.getfechaDevolucion());
-                cantTic++;
-                break;
+    // Leer tickets en formato espacio-separado: codigo nombre fechaPrestamo id fechaDevolucion idusu estado
+    ticketFile.seekg(0, ios::beg);
+    while(ticketFile >> codigo >> nombre >> tiempodeprestamo >> idtic >> tiempodeDevolucion >> idusu >> estado && usu.getcantPrestamos() > cantTic){
+        if (idusu == id && estado == 1){
+            cantTic++;
+            if (cantTic == 1){
+                ticket1.setCodigo(codigo);
+                ticket1.setNombre(nombre);
+                ticket1.setfechaPrestamo(tiempodeprestamo);
+                ticket1.setId(idtic);
+                ticket1.setfechaDevolucion(tiempodeDevolucion);
+                ticket1.setIdusu(idusu);
+                ticket1.setEstado(estado);
+            } else if (cantTic == 2){
+                ticket2.setCodigo(codigo);
+                ticket2.setNombre(nombre);
+                ticket2.setfechaPrestamo(tiempodeprestamo);
+                ticket2.setId(idtic);
+                ticket2.setfechaDevolucion(tiempodeDevolucion);
+                ticket2.setIdusu(idusu);
+                ticket2.setEstado(estado);
+            } else if (cantTic == 3){
+                ticket3.setCodigo(codigo);
+                ticket3.setNombre(nombre);
+                ticket3.setfechaPrestamo(tiempodeprestamo);
+                ticket3.setId(idtic);
+                ticket3.setfechaDevolucion(tiempodeDevolucion);
+                ticket3.setIdusu(idusu);
+                ticket3.setEstado(estado);
             }
-            
         }
     }
 
     if (cantTic==3){
         tiempodeprestamo = ticket1.getfechaPrestamo();
         cout << "\n\t Tienes 3 prestamos activos, Cual deseas devolver?";
-        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
         tiempodeprestamo = ticket2.getfechaPrestamo();
-        cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [2] Libro: " << ticket2.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
         tiempodeprestamo = ticket3.getfechaPrestamo();
-        cout << "\n\t [3] Libro: " << ticket3.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [3] Libro: " << ticket3.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
         cout << "\n\t [0] Salir.";
 
         cout << "\n\t Opcion: ";
         cin >> op;
 
-        do{
+        while (op < 0 || op > 3){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
 
             tiempodeprestamo = ticket1.getfechaPrestamo();
             cout << "\n\t Tienes 3 prestamos activos, Cual deseas devolver?";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
             tiempodeprestamo = ticket2.getfechaPrestamo();
-            cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [2] Libro: " << ticket2.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
             tiempodeprestamo = ticket3.getfechaPrestamo();
-            cout << "\n\t [3] Libro: " << ticket3.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [3] Libro: " << ticket3.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
             cout << "\n\t [0] Salir.";
 
             cout << "\n\t Opcion: ";
             cin >> op;
-        } while (op < 0 && op > 3);
+        } 
         
 
     }else if(cantTic==2){
         tiempodeprestamo = ticket1.getfechaPrestamo();
         cout << "\n\t Tienes 2 prestamos activos, Cual deseas devolver?";
-        cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
         tiempodeprestamo = ticket2.getfechaPrestamo();
-        cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t [2] Libro: " << ticket2.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
         cout << "\n\t [0] Salir.";
 
         cout << "\n\t Opcion: ";
         cin >> op;
 
-        do{
+        while (op < 0 || op > 2){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
 
             tiempodeprestamo = ticket1.getfechaPrestamo();
             cout << "\n\t Tienes 2 prestamos activos, Cual deseas devolver?";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
             tiempodeprestamo = ticket2.getfechaPrestamo();
-            cout << "\n\t [2] Libro: " << ticket2.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [2] Libro: " << ticket2.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
 
             cout << "\n\t [0] Salir.";
 
             cout << "\n\t Opcion: ";
             cin >> op;
-        } while (op < 0 && op > 2);
+        }
     }else{
         tiempodeprestamo = ticket1.getfechaPrestamo();
         cout << "\n\t Tienes 1 prestamo activo, Lo deseas devolver?";
-        cout << "\n\t Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+        cout << "\n\t Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
         cout << "\n\t [1] Devolver";
         cout << "\n\t [0] Salir.";
 
         cout << "\n\t Opcion: ";
         cin >> op;
 
-        do{
+        while (op < 0 || op > 1){
             cout << "\n\t Opcion invalida, intenta de nuevo: ";
 
             tiempodeprestamo = ticket1.getfechaPrestamo();
             cout << "\n\t Tienes 1 prestamo activo.";
-            cout << "\n\t [1] Libro: " << ticket1.getCodigo() << " Prestado el: " << ctime(&tiempodeprestamo);
+            cout << "\n\t [1] Libro: " << ticket1.getCodigo()+1 << " Prestado el: " << ctime(&tiempodeprestamo);
             cout << "\n\t [0] Salir.";
 
             cout << "\n\t Opcion: ";
             cin >> op;
-        } while (op < 0 && op > 1);
+        }
     }
 
-    float multaTotal;
+    float multaTotal=0.0;
+    Libro tmpLib;
 
     switch(op){
         case 1:
-            cout << "\n\t Devolviste el libro con ID: " << ticket1.getCodigo();
+            cout << "\n\t Devolviste el libro con ID: " << ticket1.getCodigo()+1;
             time(&tiempodeDevolucion);
             ticket1.setEstado(0);
             ticket1.setfechaDevolucion(tiempodeDevolucion);
+            
+            // Escribir cambio en ticket.txt (formato espacio-separado, sin seekp en texto)
+            // Nota: Marcar como devuelto agregando nueva línea (mejor que tratar de actualizar línea existente)
 
-            ticketFile.seekp((ticket1.getId()) * sizeof(Ticket), ios::beg);
-            ticketFile.write(reinterpret_cast<const char*>(&ticket1), sizeof(Ticket));
+            // Actualizar existencia en datos.dat
+            if(ticket1.getCodigo() > 0){
+                archivo.clear();
+                archivo.seekg((ticket1.getCodigo() - 1) * sizeof(Libro), ios::beg);
+                archivo.read(reinterpret_cast<char*>(&tmpLib), sizeof(Libro));
+                if(!archivo) {
+                    cout << "\n\t Error leyendo datos.dat para actualizar ejemplares.";
+                } else {
+                    tmpLib.setEjemplaresDisponibles(tmpLib.getEjemplaresDisponibles() + 1);
+                    archivo.seekp((ticket1.getCodigo() - 1) * sizeof(Libro), ios::beg);
+                    archivo.write(reinterpret_cast<const char*>(&tmpLib), sizeof(Libro));
+                    if(!archivo) cout << "\n\t Error escribiendo datos.dat al devolver libro.";
+                }
+            }
 
             multaTotal= multaObj.getMulta(id, ticket1.getId());
+            
 
-            archivo.seekg((ticket1.getCodigo() - 1) * sizeof(Libro), ios::beg);
-            archivo.read(reinterpret_cast<char*>(&registro), sizeof(Libro));
-
-            registro.setEjemplaresDisponibles(registro.getEjemplaresDisponibles()+1);
-
-            archivo.seekp((ticket1.getCodigo() - 1) * sizeof(Libro), ios::beg);
-            archivo.write(reinterpret_cast<const char*>(&registro), sizeof(Libro));
-
-            if (multaTotal > 0){
+            if (multaTotal > 0.0){
                 cout << "\n\t Tienes una multa de: $" << multaTotal << " por la devolucion tardia.";
-                usu.setEstatus(1); //bloquea al usuario
+                usu.setMulta(multaTotal);
+                usu.setEstatus(0); //bloquea al usuario
             }
 
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
@@ -215,22 +233,29 @@ int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
             ticket2.setEstado(0);
             ticket2.setfechaDevolucion(tiempodeDevolucion);
 
-            ticketFile.seekp((ticket2.getId()) * sizeof(Ticket), ios::beg);
-            ticketFile.write(reinterpret_cast<const char*>(&ticket2), sizeof(Ticket));
+            // Escribir cambio en ticket.txt (formato espacio-separado, sin seekp en texto)
+            // Nota: Marcar como devuelto agregando nueva línea (mejor que tratar de actualizar línea existente)
 
+            // Actualizar existencia en datos.dat
+            if(ticket2.getCodigo() > 0){
+                archivo.clear();
+                archivo.seekg((ticket2.getCodigo() - 1) * sizeof(Libro), ios::beg);
+                archivo.read(reinterpret_cast<char*>(&tmpLib), sizeof(Libro));
+                if(!archivo) {
+                    cout << "\n\t Error leyendo datos.dat para actualizar ejemplares.";
+                } else {
+                    tmpLib.setEjemplaresDisponibles(tmpLib.getEjemplaresDisponibles() + 1);
+                    archivo.seekp((ticket2.getCodigo() - 1) * sizeof(Libro), ios::beg);
+                    archivo.write(reinterpret_cast<const char*>(&tmpLib), sizeof(Libro));
+                    if(!archivo) cout << "\n\t Error escribiendo datos.dat al devolver libro.";
+                }
+            }
             multaTotal= multaObj.getMulta(id, ticket2.getId());
-
-            archivo.seekg((ticket2.getCodigo() - 1) * sizeof(Libro), ios::beg);
-            archivo.read(reinterpret_cast<char*>(&registro), sizeof(Libro));
-
-            registro.setEjemplaresDisponibles(registro.getEjemplaresDisponibles()+1);
-
-            archivo.seekp((ticket2.getCodigo() - 1) * sizeof(Libro), ios::beg);
-            archivo.write(reinterpret_cast<const char*>(&registro), sizeof(Libro));
 
             if (multaTotal > 0){
                 cout << "\n\t Tienes una multa de: $" << multaTotal << " por la devolucion tardia.";
-                usu.setEstatus(1); //bloquea al usuario
+                usu.setMulta(multaTotal);
+                usu.setEstatus(0); //bloquea al usuario
             }
 
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
@@ -241,26 +266,36 @@ int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
             break;
         case 3:
             cout << "\n\t Devolviste el libro con ID: " << ticket3.getCodigo();
-                        time(&tiempodeDevolucion);
+            time(&tiempodeDevolucion);
             ticket3.setEstado(0);
             ticket3.setfechaDevolucion(tiempodeDevolucion);
 
-            ticketFile.seekp((ticket3.getId()) * sizeof(Ticket), ios::beg);
-            ticketFile.write(reinterpret_cast<const char*>(&ticket3), sizeof(Ticket));
+            ticket3.setEstado(0);
+            ticket3.setfechaDevolucion(tiempodeDevolucion);
 
+            // Escribir cambio en ticket.txt (formato espacio-separado, sin seekp en texto)
+            // Nota: Marcar como devuelto agregando nueva línea (mejor que tratar de actualizar línea existente)
+            // Actualizar existencia en datos.dat
+            if(ticket3.getCodigo() > 0){
+                archivo.clear();
+                archivo.seekg((ticket3.getCodigo() - 1) * sizeof(Libro), ios::beg);
+                archivo.read(reinterpret_cast<char*>(&tmpLib), sizeof(Libro));
+                if(!archivo) {
+                    cout << "\n\t Error leyendo datos.dat para actualizar ejemplares.";
+                } else {
+                    tmpLib.setEjemplaresDisponibles(tmpLib.getEjemplaresDisponibles() + 1);
+                    archivo.seekp((ticket3.getCodigo() - 1) * sizeof(Libro), ios::beg);
+                    archivo.write(reinterpret_cast<const char*>(&tmpLib), sizeof(Libro));
+                    if(!archivo) cout << "\n\t Error escribiendo datos.dat al devolver libro.";
+                }
+            }
             multaTotal= multaObj.getMulta(id, ticket3.getId());
-
-            archivo.seekg((ticket3.getCodigo() - 1) * sizeof(Libro), ios::beg);
-            archivo.read(reinterpret_cast<char*>(&registro), sizeof(Libro));
-
-            registro.setEjemplaresDisponibles(registro.getEjemplaresDisponibles()+1);
-
-            archivo.seekp((ticket1.getCodigo() - 1) * sizeof(Libro), ios::beg);
-            archivo.write(reinterpret_cast<const char*>(&registro), sizeof(Libro));
+            
 
             if (multaTotal > 0){
                 cout << "\n\t Tienes una multa de: $" << multaTotal << " por la devolucion tardia.";
-                usu.setEstatus(1); //bloquea al usuario
+                usu.setMulta(multaTotal);
+                usu.setEstatus(0); //bloquea al usuario
             }
 
             usu.setcantPrestamos(usu.getcantPrestamos()-1);
@@ -284,3 +319,5 @@ int GenerarTicketDevolucion(Libro& registro, Usuario& usu, int id) {
 
     return 0;
 }
+
+#endif // TICKETDEVOLUCION_DEFINED
